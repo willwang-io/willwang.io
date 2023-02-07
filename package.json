@@ -9,11 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@next/font": "13.1.5",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.6",
+    "@mui/x-data-grid": "^5.17.20",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.5",
+    "fs": "^0.0.1-security",
+    "gray-matter": "^4.0.3",
     "next": "13.1.5",
+    "path": "^0.12.7",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "react-markdown": "^8.0.5",
+    "react-syntax-highlighter": "^15.5.0",
+    "rehype-katex": "^6.0.2",
+    "rehype-raw": "^6.1.1",
+    "remark-collapse": "^0.1.2",
+    "remark-math": "^5.1.1"
   }
 }
