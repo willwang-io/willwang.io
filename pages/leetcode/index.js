@@ -1,11 +1,20 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import LCProblemTable from "../../components/LCProblemTable";
-
+import LCMainTable from "../../components/LCMainTable";
+import Container from "@mui/system/Container";
+import Typography from "@mui/material/Typography";
 
 export default function LeetCode({ problems }) {
-  return <LCProblemTable problems={problems}/>
+  return (
+    <Container>
+      <Typography variant="h5">Give up LeetCode</Typography>
+      <Typography>
+        Just a mediocre Knight struggling to achieve Guardian some day...
+      </Typography>
+      <LCMainTable problems={problems} />
+    </Container>
+  );
 }
 
 export async function getStaticProps() {
@@ -20,12 +29,12 @@ export async function getStaticProps() {
     const { data: frontmatter } = matter(metaInfo);
 
     return {
-      frontmatter
+      frontmatter,
     };
   });
   return {
     props: {
-      problems: posts
+      problems: posts,
     },
   };
 }

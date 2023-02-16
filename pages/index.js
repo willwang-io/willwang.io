@@ -1,8 +1,11 @@
-import Link from 'next/link';
+import { Container } from '@mui/system';
+import { Link } from '@mui/material';
 
 
 export default function Home() {
   return (
-    <Link href={'/leetcode'}>Give up LeetCode</Link>
+    <Container>
+      <Link href='/site-notes'>Site Notes</Link>
+    </Container>
   )
 }

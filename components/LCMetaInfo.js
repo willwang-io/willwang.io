@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import SellIcon from "@mui/icons-material/Sell";
 import LaunchIcon from "@mui/icons-material/Launch";
-import Link from "@mui/material/Link";
+import { Link } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import LCDiffBadge from "./LCDiffBadge";
@@ -16,9 +16,7 @@ export default function LCMetaInfo({ metaInfo }) {
   const problemLink = metaInfo.title.toLowerCase().replace(/\s+/g, "-");
   return (
     <Stack direction={"row"} spacing={0}>
-      <Item>
-          <LCDiffBadge diff={metaInfo.diff}/>
-      </Item>
+          {/* <Typography sx={{ textRendering: 'optimizeLegibility'}}>fi fj fl</Typography> */}
       <Item>
         <Typography>
           <SellIcon sx={{ fontSize: "medium", marginRight: 1 }} />
@@ -26,12 +24,6 @@ export default function LCMetaInfo({ metaInfo }) {
         </Typography>
       </Item>
       <Item>
-        <Typography>
-        <LaunchIcon sx={{ fontSize: "medium", marginRight: 1 }} />
-          <Link href={`https://leetcode.com/problems/${problemLink}`}>
-            Problem Link
-          </Link>
-        </Typography>
       </Item>
     </Stack>
   );

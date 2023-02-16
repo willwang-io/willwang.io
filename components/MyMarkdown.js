@@ -16,12 +16,17 @@ import rehypeRaw from "rehype-raw";
 
 import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
 import CopyToClipboard from "../assets/copyToClipboard";
+import { ListItem, List } from "@mui/material";
 
 SyntaxHighlighter.registerLanguage("cpp", cpp);
 SyntaxHighlighter.registerLanguage("python", python);
 
 function mdParagraph({ node, ...props }) {
-  return <Typography lineHeight={1.5} letterSpacing={0.8} sx={{ mb: 3, mt:0, textRendering: 'optimizeLegibility'}}>{props.children}</Typography>;
+  return (
+    <Typography sx={{ mb: 3, mt: 0, textRendering: "optimizeLegibility" }}>
+      {props.children}
+    </Typography>
+  );
 }
 
 function mdCodeBlock({ node, inline, className, children, ...props }) {
@@ -30,6 +35,7 @@ function mdCodeBlock({ node, inline, className, children, ...props }) {
     <>
       <CopyToClipboard content={children} />
       <SyntaxHighlighter
+        customStyle={{ background: "#F9F6EE" }}
         style={githubGist}
         language={match[1]}
         PreTag="div"
@@ -50,44 +56,22 @@ const components = {
   p: mdParagraph,
   code: mdCodeBlock,
   h1: (props) => (
-    <Typography variant="h4" sx={{ my: 1 }}>
+    <Typography variant="h1" sx={{ my: 1 }}>
       {props.children}
     </Typography>
   ),
   h2: (props) => (
-    <Typography variant="h5" sx={{ mt: 1, mb: 2 }}>
+    <Typography variant="h2" sx={{ mt: 1, mb: 2 }}>
       {props.children}
     </Typography>
   ),
   h3: (props) => (
-    <Typography variant="h6" sx={{ my: 1 }}>
+    <Typography variant="h3" sx={{ my: 1 }}>
       {props.children}
     </Typography>
   ),
-  details: (props) => {
-    return (
-      <Accordion
-        disableGutters
-        square
-        sx={{
-          boxShadow: "none",
-          border: 1,
-          borderLeft: 0,
-          borderRight: 0,
-          my: 2,
-        }}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="problem-statement-content"
-          id="problem-statement-header"
-        >
-          <Typography variant="h6">{props.children[1]}</Typography>
-        </AccordionSummary>
-        <AccordionDetails>{props.children.slice(3)}</AccordionDetails>
-      </Accordion>
-    );
-  },
+  // ul: (props) => <List disablePadding dense>{props.children}</List>,
+  li: (props) => <li>{props.children}</li>,
 };
 
 export default function MyMarkdown(props) {

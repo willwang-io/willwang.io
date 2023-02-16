@@ -4,7 +4,7 @@ font-style: normal;
 font-weight: normal;
 font-stretch: normal;
 font-display: auto;
-src: url('../fonts/equity_a_regular.woff2') format('woff2');
+src: url('../fonts/Equity_A_Regular.otf') format('opentype');
 }
 
 @font-face {
@@ -13,7 +13,7 @@ font-style: italic;
 font-weight: normal;
 font-stretch: normal;
 font-display: auto;
-src: url('../fonts/equity_a_italic.woff2') format('woff2');
+src: url('../fonts/Equity_A_Italic.otf') format('opentype');
 }
 
 @font-face {
@@ -22,7 +22,7 @@ font-style: normal;
 font-weight: bold;
 font-stretch: normal;
 font-display: auto;
-src: url('../fonts/equity_a_bold.woff2') format('woff2');
+src: url('../fonts/Equity_A_Bold.otf') format('opentype');
 }
 
 @font-face {
@@ -31,7 +31,61 @@ font-style: italic;
 font-weight: bold;
 font-stretch: normal;
 font-display: auto;
-src: url('../fonts/equity_a_bold_italic.woff2') format('woff2');
+src: url('../fonts/Equity_A_Bold_Italic.otf') format('opentype');
+}
+
+@font-face {
+font-family: equity_ot_a;
+font-style: normal;
+font-weight: normal;
+font-stretch: normal;
+font-display: auto;
+src: url('../fonts/equity_ot_a_regular.woff2') format('woff2');
+}
+
+@font-face {
+font-family: equity_ot_a;
+font-style: italic;
+font-weight: normal;
+font-stretch: normal;
+font-display: auto;
+src: url('../fonts/equity_ot_a_italic.woff2') format('woff2');
+}
+
+@font-face {
+font-family: equity_ot_a;
+font-style: normal;
+font-weight: bold;
+font-stretch: normal;
+font-display: auto;
+src: url('../fonts/equity_ot_a_bold.woff2') format('woff2');
+}
+
+@font-face {
+font-family: equity_ot_a;
+font-style: italic;
+font-weight: bold;
+font-stretch: normal;
+font-display: auto;
+src: url('../fonts/equity_ot_a_bold_italic.woff2') format('woff2');
+}
+
+@font-face {
+font-family: equity_a_caps;
+font-style: normal;
+font-weight: normal;
+font-stretch: normal;
+font-display: auto;
+src: url('../fonts/equity_a_caps_regular.woff2') format('woff2');
+}
+
+@font-face {
+font-family: equity_a_caps;
+font-style: normal;
+font-weight: bold;
+font-stretch: normal;
+font-display: auto;
+src: url('../fonts/equity_a_caps_bold.woff2') format('woff2');
 }
 
 @font-face {

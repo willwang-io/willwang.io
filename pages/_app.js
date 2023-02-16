@@ -2,23 +2,18 @@ import { ThemeProvider } from "@mui/material/styles";
 import Navbar from "../components/Navbar";
 import Container from "@mui/system/Container";
 import theme from "../assets/theme";
-import GlobalStyles from "@mui/material/GlobalStyles";
 
-import '../styles/globals.css';
+import "../styles/globals.css";
+import Footer from "../components/Footer";
 
-
-export default function App({Component, pageProps}) {
+export default function App({ Component, pageProps }) {
   return (
     <ThemeProvider theme={theme}>
-      <GlobalStyles styles={{
-        p: {
-          textRendering: 'optimizeLegibility',
-        }
-      }}/>
-      <Container maxWidth="md">
-          <Navbar/>
-          <Component {...pageProps}/>
-        </Container>
+      <Container maxWidth="md" sx={{display: 'flex', minHeight: '100vh', flexDirection: 'column', justifyContent: 'flex-start'}}>
+        <Navbar />
+        <Component {...pageProps} />
+        <Footer/>
+      </Container>
     </ThemeProvider>
   );
 }

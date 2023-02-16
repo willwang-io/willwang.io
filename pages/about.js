@@ -1,13 +1,10 @@
-import { Typography } from "@mui/material";
-import { Container } from "@mui/system";
+import { Container, Typography } from "@mui/material";
 
 export default function About() {
   return (
     <Container>
-      <Typography variant="h5">
-        Hello there...
-      </Typography>
-      <Typography>My name is will</Typography>
+      <Typography variant="h2">Hello, you are here...</Typography>
+      <Typography>My name is Will. I am a software developer in Canada. </Typography>
     </Container>
-  )
+  );
 }
