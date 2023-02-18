@@ -1,55 +1,17 @@
-import * as React from 'react';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import IconButton from "@mui/material/IconButton";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import { useModeContext } from "./ColorModeContext";
 
-const ColorModeContext = React.createContext({ toggleColorMode: () => {} });
-
-function MyApp() {
-  const theme = useTheme();
-  const colorMode = React.useContext(ColorModeContext);
-  return (
-    <Box
-      sx={{
-        bgcolor: 'background.default',
-        color: 'text.primary',
-      }}
-    >
-      <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-        {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeOutlinedIcon />}
-      </IconButton>
-    </Box>
-  );
-}
+import { useTheme } from "@mui/material/styles";
 
 export default function ToggleColorMode() {
-  const [mode, setMode] = React.useState('light');
-  const colorMode = React.useMemo(
-    () => ({
-      toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-      },
-    }),
-    [],
-  );
-
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-        },
-      }),
-    [mode],
-  );
+  const colorMode = useModeContext()
+  const theme = useTheme()
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <MyApp />
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+    <IconButton onClick={colorMode.toggleColorMode}>
+      {theme.palette.mode === 'dark' ? <DarkModeIcon /> : <LightModeIcon />}
+    </IconButton>
   );
 }

@@ -1,19 +1,27 @@
-import { ThemeProvider } from "@mui/material/styles";
-import Navbar from "../components/Navbar";
-import Container from "@mui/system/Container";
-import theme from "../assets/theme";
-
-import "../styles/globals.css";
+import Container from "@mui/material/Container";
+import Header from "../components/Header";
 import Footer from "../components/Footer";
+import "../styles/globals.css";
+import ThemeContext from "../components/ColorModeContext";
 
-export default function App({ Component, pageProps }) {
+const App = ({ Component, pageProps }) => {
   return (
-    <ThemeProvider theme={theme}>
-      <Container maxWidth="md" sx={{display: 'flex', minHeight: '100vh', flexDirection: 'column', justifyContent: 'flex-start'}}>
-        <Navbar />
+    <ThemeContext>
+      <Container
+        maxWidth="md"
+        sx={{
+          display: "flex",
+          minHeight: "100vh",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+        }}
+      >
+        <Header />
         <Component {...pageProps} />
-        <Footer/>
+        <Footer />
       </Container>
-    </ThemeProvider>
+    </ThemeContext>
   );
-}
+};
+
+export default App;
