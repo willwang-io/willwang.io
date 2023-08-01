@@ -16,10 +16,6 @@ const Header = () => {
           <Typography variant="h3" sx={{ flexGrow: 1 }}>
             <Link href="/">Will&rsquo;s Log</Link>
           </Typography>
-          <Typography variant="h3">
-            <Link href="/about">About</Link>
-          </Typography>
-          <ToggleMode />
         </Toolbar>
       </AppBar>
     </Box>
