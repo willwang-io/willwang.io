@@ -1,86 +1,58 @@
 import ReactMarkdown from "react-markdown";
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import cpp from "react-syntax-highlighter/dist/cjs/languages/hljs/cpp";
-import python from "react-syntax-highlighter/dist/cjs/languages/hljs/python";
-import githubGist from "react-syntax-highlighter/dist/cjs/styles/hljs/github-gist";
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-import remarkMath from "remark-math";
+import rehypeStringify from 'rehype-stringify'
+import rehypeSanitize, {defaultSchema} from 'rehype-sanitize'
+import remarkMath from 'remark-math'
 import rehypeKatex from "rehype-katex";
-import rehypeRaw from "rehype-raw";
-
+import rehypeHighlight from "rehype-highlight/lib";
+import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import "katex/dist/katex.min.css"; // `rehype-katex` does not import the CSS for you
-import CopyToClipboard from "../assets/copyToClipboard";
-import { ListItem, List } from "@mui/material";
 
-SyntaxHighlighter.registerLanguage("cpp", cpp);
-SyntaxHighlighter.registerLanguage("python", python);
 
-function mdParagraph({ node, ...props }) {
-  return (
-    <Typography sx={{ mb: 3, mt: 0, textRendering: "optimizeLegibility" }}>
-      {props.children}
-    </Typography>
-  );
-}
-
-function mdCodeBlock({ node, inline, className, children, ...props }) {
-  const match = /language-(\w+)/.exec(className || "");
-  return !inline && match ? (
-    <>
-      <CopyToClipboard content={children} />
-      <SyntaxHighlighter
-        customStyle={{ background: "#F9F6EE" }}
-        style={githubGist}
-        language={match[1]}
-        PreTag="div"
-        showLineNumbers
-        {...props}
-      >
-        {String(children).replace(/\n$/, "")}
-      </SyntaxHighlighter>
-    </>
-  ) : (
-    <code className={className} {...props}>
-      {children}
-    </code>
-  );
-}
-
-const components = {
-  p: mdParagraph,
-  code: mdCodeBlock,
-  h1: (props) => (
-    <Typography variant="h1" sx={{ my: 1 }}>
-      {props.children}
-    </Typography>
-  ),
-  h2: (props) => (
-    <Typography variant="h2" sx={{ mt: 1, mb: 2 }}>
-      {props.children}
-    </Typography>
-  ),
-  h3: (props) => (
-    <Typography variant="h3" sx={{ my: 1 }}>
-      {props.children}
-    </Typography>
-  ),
-  // ul: (props) => <List disablePadding dense>{props.children}</List>,
-  li: (props) => <li>{props.children}</li>,
+const myComponents = {
+  a: (props) => <Link>{props.children}</Link>,
+  p: (props) => <Typography>{props.children}</Typography>,
+  h1: (props) => <Typography variant="h1">{props.children}</Typography>,
+  h2: (props) => <Typography variant="h2">{props.children}</Typography>,
+  h3: (props) => <Typography variant="h3">{props.children}</Typography>,
+  h4: (props) => <Typography variant="h4">{props.children}</Typography>,
+  h5: (props) => <Typography variant="h5">{props.children}</Typography>,
+  h6: (props) => <Typography variant="h6">{props.children}</Typography>,
 };
 
-export default function MyMarkdown(props) {
+const remarkPlugins = [remarkMath];
+
+const rehypePlugins = [
+  [rehypeSanitize, {
+  ...defaultSchema,
+  attributes: {
+  ...defaultSchema.attributes,
+  div: [
+    ...(defaultSchema.attributes.div || []),
+    ['className', 'math', 'math-display']
+  ],
+  span: [
+    ...(defaultSchema.attributes.span || []),
+    ['className', 'math', 'math-inline']
+  ],
+  code: [
+    ...(defaultSchema.attributes.code || []),
+    ['className', 'hljs', 'language-cpp']
+  ]}}],
+  rehypeKatex, 
+  [rehypeHighlight, {subset: false}],
+  rehypeStringify,
+]
+
+export default function MyMarkdown({ children }) {
   return (
-    <ReactMarkdown
-      components={components}
-      remarkPlugins={[remarkMath]}
-      rehypePlugins={[rehypeKatex, rehypeRaw]}
-      {...props}
-    />
+    <ReactMarkdown     
+      components={myComponents}
+      remarkPlugins={remarkPlugins}
+      rehypePlugins={rehypePlugins}
+    >
+      {children}
+    </ReactMarkdown>
   );
 }
