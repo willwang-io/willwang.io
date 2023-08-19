@@ -10,9 +10,8 @@ export default function Home() {
       </Head>
       <Container>
         <Typography>
-          Hello there. I am a software developer. I love typing, competitive
-          programming, and speed cubing. Other than that, I am also passionate 
-          about distance running. 
+          Hello there, I&rsquo;m a software developer who, after work, indulges 
+          in coding, typing, and cubing. Additionally, I&rsquo;m passionate about long-distance running.
         </Typography>
         <Typography>
           This is my personal website, where I randomly blog what I learned and 
