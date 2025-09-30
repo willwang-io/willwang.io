@@ -1,0 +1,13 @@
+[package]
+name = "Oxjot"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "oxjot"
+path = "src/main.rs"
+
+[dependencies]
+tera = "1"
+rstest = "0.26.1"
+indoc = "2"
