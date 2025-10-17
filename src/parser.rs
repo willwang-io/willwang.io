@@ -20,6 +20,8 @@ pub fn parse_document(content: &str) -> AstNode {
         children.push(parse_block(&mut ctx));
     }
 
+    println!("{:?}", children);
+
     AstNode {
         kind: AstKind::Document,
         span: Span {
@@ -34,7 +36,7 @@ pub fn parse_document(content: &str) -> AstNode {
 #[cfg(test)]
 mod tests {
     use crate::ast::{AstKind, AstNode, Span};
-    use crate::parse_document;
+    use crate::parser::parse_document;
     use indoc::indoc;
 
     #[test]

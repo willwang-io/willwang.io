@@ -7,7 +7,7 @@ pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
     let mut nodes: Vec<AstNode> = vec![];
     let mut delim_stack: Vec<(DelimKind, usize)> = Vec::new();
 
-    let mut offset = ctx.line_range[ctx.cur_line_position].start;
+    let offset = ctx.line_range[ctx.cur_line_position].start;
 
     let mut last_emit = 0;
     let mut idx = 0;
