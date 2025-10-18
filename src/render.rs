@@ -10,16 +10,29 @@ pub fn convert_ast_to_html(node: &AstNode, src: &[u8]) -> String {
             .join(""),
         AstKind::Paragraph => wrap_with_tag("p", node, src),
         AstKind::PlainText => node.span.as_str(src).to_owned(),
-        // For now Emph nodes carry their text in span, not children.
-        AstKind::Emph => format!("<em>{}</em>", node.span.as_str(src)),
+        AstKind::Emph => format!(
+            "<em>{}</em>",
+            if node.children.is_empty() {
+                node.span.as_str(src).to_owned()
+            } else {
+                render_children(node, src)
+            }
+        ),
+        AstKind::Strong => format!(
+            "<strong>{}</strong>",
+            if node.children.is_empty() {
+                node.span.as_str(src).to_owned()
+            } else {
+                render_children(node, src)
+            }
+        ),
         // …handle other kinds later…
         _ => render_children(node, src),
     }
 }
 
 fn render_children(node: &AstNode, src: &[u8]) -> String {
-    node
-        .children
+    node.children
         .iter()
         .map(|child| convert_ast_to_html(child, src))
         .collect::<Vec<_>>()
@@ -87,11 +100,7 @@ mod tests {
     fn renders_emphasis_inside_paragraph() {
         let src = "Text with _emphasized_.";
         // Spans mirror inline parser tests: 0..10 text, 11..21 emph, 22..23 period
-        let para = paragraph(
-            vec![plain(0, 10), emph(11, 21), plain(22, 23)],
-            0,
-            23,
-        );
+        let para = paragraph(vec![plain(0, 10), emph(11, 21), plain(22, 23)], 0, 23);
         let doc = document(vec![para], src.len());
 
         let html = convert_ast_to_html(&doc, src.as_bytes());

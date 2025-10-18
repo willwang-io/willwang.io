@@ -104,7 +104,10 @@ fn index_lines(buf: &str) -> Vec<Range> {
         if b == b'\n' {
             // Include the trailing '\n' in the line's range so that ranges are
             // contiguous with no gaps.
-            ranges.push(Range { start, end: idx + 1 });
+            ranges.push(Range {
+                start,
+                end: idx + 1,
+            });
             start = idx + 1;
         }
     }

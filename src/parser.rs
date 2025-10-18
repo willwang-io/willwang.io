@@ -20,8 +20,6 @@ pub fn parse_document(content: &str) -> AstNode {
         children.push(parse_block(&mut ctx));
     }
 
-    println!("{:?}", children);
-
     AstNode {
         kind: AstKind::Document,
         span: Span {
@@ -57,28 +55,24 @@ mod tests {
                     kind: AstKind::Paragraph,
                     span: Span { start: 0, end: 5 },
                     attrs: None,
-                    children: vec![
-                        AstNode {
-                            kind: AstKind::PlainText,
-                            span: Span { start: 0, end: 5 },
-                            attrs: None,
-                            children: vec![],
-                        }
-                    ]
+                    children: vec![AstNode {
+                        kind: AstKind::PlainText,
+                        span: Span { start: 0, end: 5 },
+                        attrs: None,
+                        children: vec![],
+                    }],
                 },
                 AstNode {
                     kind: AstKind::Paragraph,
                     span: Span { start: 7, end: 13 },
                     attrs: None,
-                    children: vec![
-                        AstNode {
-                            kind: AstKind::PlainText,
-                            span: Span { start: 7, end: 13 },
-                            attrs: None,
-                            children: vec![],
-                        }
-                    ]
-                }
+                    children: vec![AstNode {
+                        kind: AstKind::PlainText,
+                        span: Span { start: 7, end: 13 },
+                        attrs: None,
+                        children: vec![],
+                    }],
+                },
             ],
         };
         assert_eq!(expect, actual)
