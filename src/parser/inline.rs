@@ -13,46 +13,41 @@ pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
     let mut idx = 0;
 
     while idx < n {
-        if let Some(delim) = delim_of(bytes[idx]) {
-            if matches!(delim_stack.last(), Some(top) if top.kind == delim) {
-                if last_emit < idx {
-                    push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
-                }
-
-                let top = delim_stack.pop().expect("delimiter stack corrupted");
-                let kind = match delim {
-                    DelimKind::Underscore => AstKind::Emph,
-                    DelimKind::Star => AstKind::Strong,
-                    DelimKind::Tilde => AstKind::Sub,
-                    DelimKind::Caret => AstKind::Sup,
-                    _ => AstKind::Attributes,
-                };
-                let node = AstNode {
-                    kind,
-                    span: Span {
-                        start: top.content_start + offset,
-                        end: idx + offset,
-                    },
-                    attrs: None,
-                    children: top.children,
-                };
-                push_node(&mut delim_stack, &mut nodes, node);
-
-                last_emit = idx + 1;
-                idx += 1;
-            } else {
-                if last_emit < idx {
-                    push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
-                }
-                delim_stack.push(Delimiter {
-                    kind: delim,
-                    open_pos: idx,
-                    content_start: idx + 1,
-                    children: Vec::new(),
-                });
-                last_emit = idx + 1;
-                idx += 1;
+        if let Some((def_index, close_len)) = match_closing(bytes, idx, &delim_stack) {
+            if last_emit < idx {
+                push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
             }
+
+            let top = delim_stack.pop().expect("delimiter stack corrupted");
+            let def = &DELIMITERS[def_index];
+            let node = AstNode {
+                kind: def.ast_kind(),
+                span: Span {
+                    start: top.content_start + offset,
+                    end: idx + offset,
+                },
+                attrs: None,
+                children: top.children,
+            };
+            push_node(&mut delim_stack, &mut nodes, node);
+
+            last_emit = idx + close_len;
+            idx += close_len;
+            continue;
+        }
+
+        if let Some((def_index, open_len)) = match_opening(bytes, idx) {
+            if last_emit < idx {
+                push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
+            }
+            delim_stack.push(Delimiter {
+                def_index,
+                open_pos: idx,
+                content_start: idx + open_len,
+                children: Vec::new(),
+            });
+            last_emit = idx + open_len;
+            idx += open_len;
         } else {
             idx += 1;
         }
@@ -74,11 +69,47 @@ pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
 
 #[derive(Debug)]
 struct Delimiter {
-    kind: DelimKind,
+    def_index: usize,
     open_pos: usize,
     content_start: usize,
     children: Vec<AstNode>,
 }
+
+#[derive(Debug)]
+struct DelimiterDef {
+    kind: DelimKind,
+    open: &'static [u8],
+    close: &'static [u8],
+}
+
+impl DelimiterDef {
+    const fn new(kind: DelimKind, open: &'static [u8], close: &'static [u8]) -> Self {
+        Self { kind, open, close }
+    }
+
+    fn ast_kind(&self) -> AstKind {
+        match self.kind {
+            DelimKind::Underscore => AstKind::Emph,
+            DelimKind::Star => AstKind::Strong,
+            DelimKind::Tilde => AstKind::Sub,
+            DelimKind::Caret => AstKind::Sup,
+            DelimKind::Mark => AstKind::Mark,
+            DelimKind::Insert => AstKind::Insert,
+            DelimKind::Delete => AstKind::Delete,
+            _ => AstKind::PlainText,
+        }
+    }
+}
+
+const DELIMITERS: &[DelimiterDef] = &[
+    DelimiterDef::new(DelimKind::Mark, b"{=", b"=}"),
+    DelimiterDef::new(DelimKind::Insert, b"{+", b"+}"),
+    DelimiterDef::new(DelimKind::Delete, b"{-", b"-}"),
+    DelimiterDef::new(DelimKind::Underscore, b"_", b"_"),
+    DelimiterDef::new(DelimKind::Star, b"*", b"*"),
+    DelimiterDef::new(DelimKind::Tilde, b"~", b"~"),
+    DelimiterDef::new(DelimKind::Caret, b"^", b"^"),
+];
 
 fn push_plain(
     delim_stack: &mut Vec<Delimiter>,
@@ -112,14 +143,32 @@ fn push_node(delim_stack: &mut Vec<Delimiter>, nodes: &mut Vec<AstNode>, node: A
     }
 }
 
-fn delim_of(c: u8) -> Option<DelimKind> {
-    match c {
-        b'_' => Some(DelimKind::Underscore),
-        b'*' => Some(DelimKind::Star),
-        b'~' => Some(DelimKind::Tilde),
-        b'^' => Some(DelimKind::Caret),
-        _ => None,
+fn match_closing(bytes: &[u8], idx: usize, stack: &[Delimiter]) -> Option<(usize, usize)> {
+    let top = stack.last()?;
+    let def = &DELIMITERS[top.def_index];
+    if starts_with(bytes, idx, def.close) {
+        Some((top.def_index, def.close.len()))
+    } else {
+        None
     }
+}
+
+fn match_opening(bytes: &[u8], idx: usize) -> Option<(usize, usize)> {
+    let mut best: Option<(usize, usize)> = None;
+    for (i, def) in DELIMITERS.iter().enumerate() {
+        if starts_with(bytes, idx, def.open) {
+            let len = def.open.len();
+            if best.map_or(true, |(_, best_len)| len > best_len) {
+                best = Some((i, len));
+            }
+        }
+    }
+    best
+}
+
+fn starts_with(bytes: &[u8], idx: usize, pat: &[u8]) -> bool {
+    let end = idx + pat.len();
+    end <= bytes.len() && &bytes[idx..end] == pat
 }
 
 #[cfg(test)]
@@ -166,6 +215,22 @@ mod tests {
             with_children(AstKind::Emph, 11, 21, vec![plain(11, 21)]),
             plain(22, 23),
         ];
+        assert_eq!(expected, actual);
+    }
+
+    #[rstest]
+    #[case("{=highlight=}", AstKind::Mark, 2, 11)]
+    #[case("{+insert+}", AstKind::Insert, 2, 8)]
+    #[case("{-remove-}", AstKind::Delete, 2, 8)]
+    fn inline_multi_char_delimiters(
+        #[case] line: &str,
+        #[case] kind: AstKind,
+        #[case] start: usize,
+        #[case] end: usize,
+    ) {
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+        let expected = vec![with_children(kind, start, end, vec![plain(start, end)])];
         assert_eq!(expected, actual);
     }
 

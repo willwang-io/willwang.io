@@ -1,1 +1,1 @@
-Here are _emphasize text_, *strong text*, and _*they can be nested*_. Some sub: H~2~O and some sup: 21^st^ century.
+Essential inline syntaxes, such as: _emphasize_, *strong*, and _*they can be nested*_. ~sub~, ^sup^, {+insert+}, {-delete-}, and {=highlighted=}, and of course, they can be {={+{-*_^nested^_*-}+}=}.

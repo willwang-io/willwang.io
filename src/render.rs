@@ -10,38 +10,13 @@ pub fn convert_ast_to_html(node: &AstNode, src: &[u8]) -> String {
             .join(""),
         AstKind::Paragraph => wrap_with_tag("p", node, src),
         AstKind::PlainText => node.span.as_str(src).to_owned(),
-        AstKind::Emph => format!(
-            "<em>{}</em>",
-            if node.children.is_empty() {
-                node.span.as_str(src).to_owned()
-            } else {
-                render_children(node, src)
-            }
-        ),
-        AstKind::Strong => format!(
-            "<strong>{}</strong>",
-            if node.children.is_empty() {
-                node.span.as_str(src).to_owned()
-            } else {
-                render_children(node, src)
-            }
-        ),
-        AstKind::Sub => format!(
-            "<sub>{}</sub>",
-            if node.children.is_empty() {
-                node.span.as_str(src).to_owned()
-            } else {
-                render_children(node, src)
-            }
-        ),
-        AstKind::Sup => format!(
-            "<sup>{}</sup>",
-            if node.children.is_empty() {
-                node.span.as_str(src).to_owned()
-            } else {
-                render_children(node, src)
-            }
-        ),
+        AstKind::Emph => wrap_inline_tag("em", node, src),
+        AstKind::Strong => wrap_inline_tag("strong", node, src),
+        AstKind::Mark => wrap_inline_tag("mark", node, src),
+        AstKind::Insert => wrap_inline_tag("ins", node, src),
+        AstKind::Delete => wrap_inline_tag("del", node, src),
+        AstKind::Sub => wrap_inline_tag("sub", node, src),
+        AstKind::Sup => wrap_inline_tag("sup", node, src),
         // …handle other kinds later…
         _ => render_children(node, src),
     }
@@ -59,6 +34,19 @@ fn wrap_with_tag(tag: &str, node: &AstNode, src: &[u8]) -> String {
     format!("<{tag}>{}</{tag}>", render_children(node, src))
 }
 
+fn wrap_inline_tag(tag: &str, node: &AstNode, src: &[u8]) -> String {
+    let inner = inline_inner(node, src);
+    format!("<{tag}>{inner}</{tag}>")
+}
+
+fn inline_inner(node: &AstNode, src: &[u8]) -> String {
+    if node.children.is_empty() {
+        node.span.as_str(src).to_owned()
+    } else {
+        render_children(node, src)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::convert_ast_to_html;
@@ -74,12 +62,11 @@ mod tests {
     }
 
     fn emph(start: usize, end: usize) -> AstNode {
-        AstNode {
-            kind: AstKind::Emph,
-            span: Span { start, end },
-            attrs: None,
-            children: vec![],
-        }
+        inline_node(AstKind::Emph, start, end)
+    }
+
+    fn mark(start: usize, end: usize) -> AstNode {
+        inline_node(AstKind::Mark, start, end)
     }
 
     fn paragraph(children: Vec<AstNode>, start: usize, end: usize) -> AstNode {
@@ -121,5 +108,24 @@ mod tests {
 
         let html = convert_ast_to_html(&doc, src.as_bytes());
         assert_eq!(html, "<p>Text with <em>emphasized</em>.</p>");
+    }
+
+    #[test]
+    fn renders_mark_inline() {
+        let src = "{=highlight=}";
+        let para = paragraph(vec![mark(2, 11)], 0, src.len());
+        let doc = document(vec![para], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(html, "<p><mark>highlight</mark></p>");
+    }
+
+    fn inline_node(kind: AstKind, start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![plain(start, end)],
+        }
     }
 }
