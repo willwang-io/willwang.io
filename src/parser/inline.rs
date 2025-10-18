@@ -23,6 +23,8 @@ pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
                 let kind = match delim {
                     DelimKind::Underscore => AstKind::Emph,
                     DelimKind::Star => AstKind::Strong,
+                    DelimKind::Tilde => AstKind::Sub,
+                    DelimKind::Caret => AstKind::Sup,
                     _ => AstKind::Attributes,
                 };
                 let node = AstNode {
@@ -114,6 +116,8 @@ fn delim_of(c: u8) -> Option<DelimKind> {
     match c {
         b'_' => Some(DelimKind::Underscore),
         b'*' => Some(DelimKind::Star),
+        b'~' => Some(DelimKind::Tilde),
+        b'^' => Some(DelimKind::Caret),
         _ => None,
     }
 }
@@ -140,8 +144,8 @@ mod tests {
     #[rstest]
     #[case::emphasis("_", AstKind::Emph)]
     #[case::strong("*", AstKind::Strong)]
-    // #[case::strong("~", AstKind::Sup)]
-    // #[case::strong("^", AstKind::Sub)]
+    #[case::strong("~", AstKind::Sub)]
+    #[case::strong("^", AstKind::Sup)]
     fn inline_syntax_with_single_char_delimiter(#[case] delim: &str, #[case] kind: AstKind) {
         let line = format!("{delim}some text{delim}");
         let mut ctx = Context::new(line.as_str());

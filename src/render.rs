@@ -26,6 +26,22 @@ pub fn convert_ast_to_html(node: &AstNode, src: &[u8]) -> String {
                 render_children(node, src)
             }
         ),
+        AstKind::Sub => format!(
+            "<sub>{}</sub>",
+            if node.children.is_empty() {
+                node.span.as_str(src).to_owned()
+            } else {
+                render_children(node, src)
+            }
+        ),
+        AstKind::Sup => format!(
+            "<sup>{}</sup>",
+            if node.children.is_empty() {
+                node.span.as_str(src).to_owned()
+            } else {
+                render_children(node, src)
+            }
+        ),
         // …handle other kinds later…
         _ => render_children(node, src),
     }
