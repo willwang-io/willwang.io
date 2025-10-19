@@ -17,6 +17,15 @@ pub fn convert_ast_to_html(node: &AstNode, src: &[u8]) -> String {
         AstKind::Delete => wrap_inline_tag("del", node, src),
         AstKind::Sub => wrap_inline_tag("sub", node, src),
         AstKind::Sup => wrap_inline_tag("sup", node, src),
+        AstKind::Code => wrap_inline_tag("code", node, src),
+        AstKind::MathInline => format!(
+            "<span class=\"math inline\">\\({}\\)</span>",
+            inline_inner(node, src)
+        ),
+        AstKind::MathDisplay => format!(
+            "<span class=\"math display\">\\[{}\\]</span>",
+            inline_inner(node, src)
+        ),
         // …handle other kinds later…
         _ => render_children(node, src),
     }
@@ -69,6 +78,33 @@ mod tests {
         inline_node(AstKind::Mark, start, end)
     }
 
+    fn code(start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::Code,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![],
+        }
+    }
+
+    fn math_inline(start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::MathInline,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![],
+        }
+    }
+
+    fn math_display(start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::MathDisplay,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![],
+        }
+    }
+
     fn paragraph(children: Vec<AstNode>, start: usize, end: usize) -> AstNode {
         AstNode {
             kind: AstKind::Paragraph,
@@ -118,6 +154,61 @@ mod tests {
 
         let html = convert_ast_to_html(&doc, src.as_bytes());
         assert_eq!(html, "<p><mark>highlight</mark></p>");
+    }
+
+    #[test]
+    fn renders_inline_code() {
+        let src = "`code`";
+        let para = paragraph(vec![code(1, 5)], 0, src.len());
+        let doc = document(vec![para], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(html, "<p><code>code</code></p>");
+    }
+
+    #[test]
+    fn renders_inline_math() {
+        let src = "Einstein derived $`e=mc^2`.";
+        let span_start = src.find('`').unwrap() + 1;
+        let span_end = src.rfind('`').unwrap();
+        let para = paragraph(
+            vec![
+                plain(0, src.find('$').unwrap()),
+                math_inline(span_start, span_end),
+                plain(span_end + 1, src.len()),
+            ],
+            0,
+            src.len(),
+        );
+        let doc = document(vec![para], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(
+            html,
+            "<p>Einstein derived <span class=\"math inline\">\\(e=mc^2\\)</span>.</p>"
+        );
+    }
+
+    #[test]
+    fn renders_display_math() {
+        let src = "Pythagoras proved $$` x^n + y^n = z^n `";
+        let span_start = src.find('`').unwrap() + 1;
+        let span_end = src.rfind('`').unwrap();
+        let para = paragraph(
+            vec![
+                plain(0, src.find('$').unwrap()),
+                math_display(span_start, span_end),
+            ],
+            0,
+            src.len(),
+        );
+        let doc = document(vec![para], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(
+            html,
+            "<p>Pythagoras proved <span class=\"math display\">\\[ x^n + y^n = z^n \\]</span></p>"
+        );
     }
 
     fn inline_node(kind: AstKind, start: usize, end: usize) -> AstNode {

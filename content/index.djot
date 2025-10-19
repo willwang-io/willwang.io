@@ -1,5 +1,5 @@
 Hey, I’m a software developer who, after work, indulges in coding, typing, cubing, and long-distance running. 
 
-This is my personal website, where I randomly blog what I learned and experienced. The site is powered by my own static site generator engine, with a custom parser to abstract syntax tree and HTML render for the Djot markup language. 
+This is my personal website, where I post occasional notes about what I learn and experience. The site is powered by a static site generator I built, with a custom parser that produces an abstract syntax tree and an HTML renderer for the Djot markup language.
 
-It currently supports essential inline syntaxes, such as: _emphasize_, *strong*, ~sub~, ^sup^, {+insert+}, {-delete-}, and {=highlighted=}. Lastly, they can be {={+{-*_^nested^_*-}+}=}, of course.  
+It currently supports essential inline syntaxes, such as: _emphasize_, *strong*, ~sub~, ^sup^, {+insert+}, {-delete-}, and {=highlighted=}. These can be {={+{-*_^nested^_*-}+}=}, of course. It also handles `verbatim (code)` and embedded math like $`a^2+b^2=c^2` or $$`\sum_{n=0} ^ {\infty} \frac {f^{(n)}(a)}{n!} (x-a)^{n},` which are essential for my needs. 

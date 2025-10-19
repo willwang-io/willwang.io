@@ -13,6 +13,62 @@ pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
     let mut idx = 0;
 
     while idx < n {
+        if bytes[idx] == b'$' {
+            let run = if idx + 1 < n && bytes[idx + 1] == b'$' {
+                2
+            } else {
+                1
+            };
+            if let Some((span_start, span_end, next_idx)) = extract_backtick_span(bytes, idx + run)
+            {
+                if last_emit < idx {
+                    push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
+                }
+
+                let kind = if run == 2 {
+                    AstKind::MathDisplay
+                } else {
+                    AstKind::MathInline
+                };
+
+                let node = AstNode {
+                    kind,
+                    span: Span {
+                        start: span_start + offset,
+                        end: span_end + offset,
+                    },
+                    attrs: None,
+                    children: vec![],
+                };
+                push_node(&mut delim_stack, &mut nodes, node);
+
+                idx = next_idx;
+                last_emit = idx;
+                continue;
+            }
+        }
+
+        if let Some((span_start, span_end, next_idx)) = extract_backtick_span(bytes, idx) {
+            if last_emit < idx {
+                push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
+            }
+
+            let node = AstNode {
+                kind: AstKind::Code,
+                span: Span {
+                    start: span_start + offset,
+                    end: span_end + offset,
+                },
+                attrs: None,
+                children: vec![],
+            };
+            push_node(&mut delim_stack, &mut nodes, node);
+
+            idx = next_idx;
+            last_emit = idx;
+            continue;
+        }
+
         if let Some((def_index, close_len)) = match_closing(bytes, idx, &delim_stack) {
             if last_emit < idx {
                 push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
@@ -143,6 +199,76 @@ fn push_node(delim_stack: &mut Vec<Delimiter>, nodes: &mut Vec<AstNode>, node: A
     }
 }
 
+fn count_backticks(bytes: &[u8], idx: usize) -> usize {
+    let mut count = 0;
+    while idx + count < bytes.len() && bytes[idx + count] == b'`' {
+        count += 1;
+    }
+    count
+}
+
+fn find_backtick_closer(bytes: &[u8], mut idx: usize, run: usize) -> (usize, usize) {
+    let n = bytes.len();
+    while idx < n {
+        if bytes[idx] == b'`' {
+            let mut count = 0;
+            while idx + count < n && bytes[idx + count] == b'`' {
+                count += 1;
+            }
+            if count == run {
+                return (idx, run);
+            }
+            idx += count.max(1);
+        } else {
+            idx += 1;
+        }
+    }
+    (n, 0)
+}
+
+fn extract_backtick_span(bytes: &[u8], idx: usize) -> Option<(usize, usize, usize)> {
+    let run = count_backticks(bytes, idx);
+    if run == 0 {
+        return None;
+    }
+
+    let content_start_raw = idx + run;
+    let (content_end_raw, close_len) = find_backtick_closer(bytes, content_start_raw, run);
+
+    let mut span_start = content_start_raw;
+    let mut span_end = if close_len == run {
+        content_end_raw
+    } else {
+        bytes.len()
+    };
+
+    if span_start + 1 < bytes.len()
+        && span_start < span_end
+        && bytes.get(span_start) == Some(&b' ')
+        && bytes.get(span_start + 1) == Some(&b'`')
+    {
+        span_start += 1;
+    }
+
+    if close_len == run
+        && span_start < span_end
+        && span_end > 0
+        && bytes.get(span_end - 1) == Some(&b' ')
+        && span_end >= span_start + 2
+        && bytes.get(span_end - 2) == Some(&b'`')
+    {
+        span_end -= 1;
+    }
+
+    let next_idx = if close_len == run {
+        content_end_raw + run
+    } else {
+        bytes.len()
+    };
+
+    Some((span_start, span_end, next_idx))
+}
+
 fn match_closing(bytes: &[u8], idx: usize, stack: &[Delimiter]) -> Option<(usize, usize)> {
     let top = stack.last()?;
     let def = &DELIMITERS[top.def_index];
@@ -261,6 +387,77 @@ mod tests {
         assert_eq!(expected, actual);
     }
 
+    #[test]
+    fn inline_code_simple() {
+        let line = "`code`";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+        let expected = vec![code(1, 5)];
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn inline_code_with_backtick_inside() {
+        let line = "``Verbatim with a backtick` character``";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+        let expected = vec![code(2, line.len() - 2)];
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn inline_code_with_padding_for_backtick() {
+        let line = "`` `foo` ``";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+        let expected = vec![code(3, 8)];
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn inline_code_unterminated_extends() {
+        let line = "`foo bar";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+        let expected = vec![code(1, line.len())];
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn inline_math() {
+        let line = "Einstein derived $`e=mc^2`.";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+
+        let dollar_pos = line.find('$').unwrap();
+        let open_tick = line.find('`').unwrap();
+        let close_tick = line.rfind('`').unwrap();
+        let expected = vec![
+            plain(0, dollar_pos),
+            math_inline(open_tick + 1, close_tick),
+            plain(close_tick + 1, line.len()),
+        ];
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn display_math() {
+        let line = "Pythagoras proved $$` x^n + y^n = z^n `";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+
+        let dollar_pos = line.find('$').unwrap();
+        let open_tick = line.find('`').unwrap();
+        let close_tick = line.rfind('`').unwrap();
+        let expected = vec![
+            plain(0, dollar_pos),
+            math_display(open_tick + 1, close_tick),
+        ];
+
+        assert_eq!(expected, actual);
+    }
+
     fn plain(start: usize, end: usize) -> AstNode {
         AstNode {
             kind: AstKind::PlainText,
@@ -276,6 +473,33 @@ mod tests {
             span: Span { start, end },
             attrs: None,
             children,
+        }
+    }
+
+    fn code(start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::Code,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![],
+        }
+    }
+
+    fn math_inline(start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::MathInline,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![],
+        }
+    }
+
+    fn math_display(start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::MathDisplay,
+            span: Span { start, end },
+            attrs: None,
+            children: vec![],
         }
     }
 }

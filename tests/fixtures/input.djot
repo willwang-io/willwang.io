@@ -1,1 +1,1 @@
-Essential inline syntaxes, such as: _emphasize_, *strong*, and _*they can be nested*_. ~sub~, ^sup^, {+insert+}, {-delete-}, and {=highlighted=}, and of course, they can be {={+{-*_^nested^_*-}+}=}.
+It currently supports essential inline syntaxes, such as: _emphasize_, *strong*, ~sub~, ^sup^, {+insert+}, {-delete-}, and {=highlighted=}. These can be {={+{-*_^nested^_*-}+}=}, of course. It also handles `verbatim (code)` and embedded math like $`a^2+b^2=c^2` or $$`\sum_{n=0} ^ {\infty} \frac {f^{(n)}(a)}{n!} (x-a)^{n},` which are essential for my needs.
