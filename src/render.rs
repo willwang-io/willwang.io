@@ -18,6 +18,25 @@ pub fn convert_ast_to_html(node: &AstNode, src: &[u8]) -> String {
         AstKind::Sub => wrap_inline_tag("sub", node, src),
         AstKind::Sup => wrap_inline_tag("sup", node, src),
         AstKind::Code => wrap_inline_tag("code", node, src),
+        AstKind::Link { dest_span, .. } => {
+            let href = dest_span
+                .as_ref()
+                .map(|span| span.as_str(src))
+                .unwrap_or("");
+            format!("<a href=\"{}\">{}</a>", href, render_children(node, src))
+        }
+        AstKind::Image { dest_span, .. } => {
+            let src_attr = dest_span
+                .as_ref()
+                .map(|span| span.as_str(src))
+                .unwrap_or("");
+            let alt = node
+                .children
+                .iter()
+                .map(|child| child.span.as_str(src))
+                .collect::<String>();
+            format!("<img alt=\"{}\" src=\"{}\">", alt, src_attr)
+        }
         AstKind::MathInline => format!(
             "<span class=\"math inline\">\\({}\\)</span>",
             inline_inner(node, src)
@@ -211,12 +230,114 @@ mod tests {
         );
     }
 
+    #[test]
+    fn renders_link() {
+        let src = "[My link text](http://example.com)";
+        let label_start = src.find('[').unwrap() + 1;
+        let label_end = src.find(']').unwrap();
+        let dest_start = src.find('(').unwrap() + 1;
+        let dest_end = src.rfind(')').unwrap();
+        let para = paragraph(
+            vec![link(
+                label_start,
+                label_end,
+                dest_start,
+                dest_end,
+                vec![plain(label_start, label_end)],
+            )],
+            0,
+            src.len(),
+        );
+        let doc = document(vec![para], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(
+            html,
+            "<p><a href=\"http://example.com\">My link text</a></p>"
+        );
+    }
+
+    #[test]
+    fn renders_image() {
+        let src = "![picture of a cat](cat.jpg)";
+        let label_start = src.find('[').unwrap() + 1;
+        let label_end = src.find(']').unwrap();
+        let dest_start = src.find('(').unwrap() + 1;
+        let dest_end = src.rfind(')').unwrap();
+        let para = paragraph(
+            vec![image(
+                label_start,
+                label_end,
+                dest_start,
+                dest_end,
+                vec![plain(label_start, label_end)],
+            )],
+            0,
+            src.len(),
+        );
+        let doc = document(vec![para], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(
+            html,
+            "<p><img alt=\"picture of a cat\" src=\"cat.jpg\"></p>"
+        );
+    }
+
     fn inline_node(kind: AstKind, start: usize, end: usize) -> AstNode {
         AstNode {
             kind,
             span: Span { start, end },
             attrs: None,
             children: vec![plain(start, end)],
+        }
+    }
+
+    fn link(
+        label_start: usize,
+        label_end: usize,
+        dest_start: usize,
+        dest_end: usize,
+        children: Vec<AstNode>,
+    ) -> AstNode {
+        AstNode {
+            kind: AstKind::Link {
+                dest_span: Some(Span {
+                    start: dest_start,
+                    end: dest_end,
+                }),
+                title_span: None,
+            },
+            span: Span {
+                start: label_start,
+                end: label_end,
+            },
+            attrs: None,
+            children,
+        }
+    }
+
+    fn image(
+        label_start: usize,
+        label_end: usize,
+        dest_start: usize,
+        dest_end: usize,
+        children: Vec<AstNode>,
+    ) -> AstNode {
+        AstNode {
+            kind: AstKind::Image {
+                dest_span: Some(Span {
+                    start: dest_start,
+                    end: dest_end,
+                }),
+                title_span: None,
+            },
+            span: Span {
+                start: label_start,
+                end: label_end,
+            },
+            attrs: None,
+            children,
         }
     }
 }

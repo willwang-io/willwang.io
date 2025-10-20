@@ -13,6 +13,16 @@ pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
     let mut idx = 0;
 
     while idx < n {
+        if let Some((node, next_idx)) = parse_link_or_image(bytes, idx, offset) {
+            if last_emit < idx {
+                push_plain(&mut delim_stack, &mut nodes, last_emit, idx, offset);
+            }
+            push_node(&mut delim_stack, &mut nodes, node);
+            idx = next_idx;
+            last_emit = idx;
+            continue;
+        }
+
         if bytes[idx] == b'$' {
             let run = if idx + 1 < n && bytes[idx + 1] == b'$' {
                 2
@@ -269,6 +279,101 @@ fn extract_backtick_span(bytes: &[u8], idx: usize) -> Option<(usize, usize, usiz
     Some((span_start, span_end, next_idx))
 }
 
+fn parse_link_or_image(bytes: &[u8], idx: usize, offset: usize) -> Option<(AstNode, usize)> {
+    let (is_image, label_start) =
+        if bytes[idx] == b'!' && idx + 1 < bytes.len() && bytes[idx + 1] == b'[' {
+            (true, idx + 2)
+        } else if bytes[idx] == b'[' {
+            (false, idx + 1)
+        } else {
+            return None;
+        };
+
+    let close_bracket = find_matching(bytes, label_start, b']')?;
+    if close_bracket + 1 >= bytes.len() || bytes[close_bracket + 1] != b'(' {
+        return None;
+    }
+
+    let dest_start_raw = close_bracket + 2;
+    let dest_end_raw = find_matching(bytes, dest_start_raw, b')')?;
+
+    let mut dest_start = dest_start_raw;
+    while dest_start < dest_end_raw && bytes[dest_start].is_ascii_whitespace() {
+        dest_start += 1;
+    }
+    let mut dest_end = dest_end_raw;
+    while dest_end > dest_start && bytes[dest_end - 1].is_ascii_whitespace() {
+        dest_end -= 1;
+    }
+
+    let mut label_inner_start = label_start;
+    while label_inner_start < close_bracket && bytes[label_inner_start].is_ascii_whitespace() {
+        label_inner_start += 1;
+    }
+    let mut label_inner_end = close_bracket;
+    while label_inner_end > label_inner_start && bytes[label_inner_end - 1].is_ascii_whitespace() {
+        label_inner_end -= 1;
+    }
+
+    let mut children = Vec::new();
+    if label_inner_start < label_inner_end {
+        children.push(AstNode {
+            kind: AstKind::PlainText,
+            span: Span {
+                start: label_inner_start + offset,
+                end: label_inner_end + offset,
+            },
+            attrs: None,
+            children: vec![],
+        });
+    }
+
+    let dest_span = if dest_start < dest_end {
+        Some(Span {
+            start: dest_start + offset,
+            end: dest_end + offset,
+        })
+    } else {
+        None
+    };
+
+    let span = Span {
+        start: label_inner_start + offset,
+        end: label_inner_end + offset,
+    };
+
+    let kind = if is_image {
+        AstKind::Image {
+            dest_span,
+            title_span: None,
+        }
+    } else {
+        AstKind::Link {
+            dest_span,
+            title_span: None,
+        }
+    };
+
+    let node = AstNode {
+        kind,
+        span,
+        attrs: None,
+        children,
+    };
+
+    Some((node, dest_end_raw + 1))
+}
+
+fn find_matching(bytes: &[u8], mut idx: usize, target: u8) -> Option<usize> {
+    while idx < bytes.len() {
+        if bytes[idx] == target {
+            return Some(idx);
+        }
+        idx += 1;
+    }
+    None
+}
+
 fn match_closing(bytes: &[u8], idx: usize, stack: &[Delimiter]) -> Option<(usize, usize)> {
     let top = stack.last()?;
     let def = &DELIMITERS[top.def_index];
@@ -458,6 +563,50 @@ mod tests {
         assert_eq!(expected, actual);
     }
 
+    #[test]
+    fn link_basic() {
+        let line = "[My link text](http://example.com)";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+
+        let label_start = line.find('[').unwrap() + 1;
+        let label_end = line.find(']').unwrap();
+        let dest_start = line.find('(').unwrap() + 1;
+        let dest_end = line.rfind(')').unwrap();
+
+        let expected = vec![link(
+            label_start,
+            label_end,
+            dest_start,
+            dest_end,
+            vec![plain(label_start, label_end)],
+        )];
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test]
+    fn image_basic() {
+        let line = "![picture of a cat](cat.jpg)";
+        let mut ctx = Context::new(line);
+        let actual = parse_inline(&mut ctx);
+
+        let label_start = line.find('[').unwrap() + 1;
+        let label_end = line.find(']').unwrap();
+        let dest_start = line.find('(').unwrap() + 1;
+        let dest_end = line.rfind(')').unwrap();
+
+        let expected = vec![image(
+            label_start,
+            label_end,
+            dest_start,
+            dest_end,
+            vec![plain(label_start, label_end)],
+        )];
+
+        assert_eq!(expected, actual);
+    }
+
     fn plain(start: usize, end: usize) -> AstNode {
         AstNode {
             kind: AstKind::PlainText,
@@ -500,6 +649,54 @@ mod tests {
             span: Span { start, end },
             attrs: None,
             children: vec![],
+        }
+    }
+
+    fn link(
+        label_start: usize,
+        label_end: usize,
+        dest_start: usize,
+        dest_end: usize,
+        children: Vec<AstNode>,
+    ) -> AstNode {
+        AstNode {
+            kind: AstKind::Link {
+                dest_span: Some(Span {
+                    start: dest_start,
+                    end: dest_end,
+                }),
+                title_span: None,
+            },
+            span: Span {
+                start: label_start,
+                end: label_end,
+            },
+            attrs: None,
+            children,
+        }
+    }
+
+    fn image(
+        label_start: usize,
+        label_end: usize,
+        dest_start: usize,
+        dest_end: usize,
+        children: Vec<AstNode>,
+    ) -> AstNode {
+        AstNode {
+            kind: AstKind::Image {
+                dest_span: Some(Span {
+                    start: dest_start,
+                    end: dest_end,
+                }),
+                title_span: None,
+            },
+            span: Span {
+                start: label_start,
+                end: label_end,
+            },
+            attrs: None,
+            children,
         }
     }
 }
