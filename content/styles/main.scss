@@ -2,9 +2,56 @@
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    width: 100%;
 }
 
 html {
     font-size: min(22px, max(16px, 2.4vw));
+}
+
+p, div.p, blockquote, li {
+    margin-bottom: 1rem;
+    line-height: 1.42;
+}
+
+
+body {
+  font-feature-settings: 'ss01';
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width:1500px;
+  -webkit-font-smoothing: subpixel-antialiased; /* corrects safari rendering */
+
+  background: #fafafa;
+  color: #444;
+  line-height: 1.4;
+}
+
+#doc {
+    background: white;
+    border: 0px solid #aaa;
+    border-top: 0px;
+    margin: 0 auto;
+    padding: 2rem 3rem;
+    padding-left: min(8rem);
+    max-width: 900px;
+}
+
+@media (min-aspect-ratio:2/3) and (min-width:800px) {
+    #doc {
+        max-width: 900px;
+        gap: 2rem;
+    }
+}
+
+@media all and (max-width:600px) {
+    #doc {
+        padding: 1rem;
+    }
+}
+
+#doc img {
+    border: 1px solid #ccc;
+    width: 90%;
+    padding: 1em;
 }
