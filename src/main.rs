@@ -17,6 +17,9 @@ fn main() {
     let files = read_dir(IN_DIR).unwrap();
 
     for path in files {
+        if !path.is_file() {
+            continue;
+        }
         let content = read_file(&path).unwrap();
         let ast_root = parse_document(&content);
 
