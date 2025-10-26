@@ -48,10 +48,9 @@ jobs:
 
           preCommands: |
             set -eux
-            mkdir -p "${{ env.BUILD_OUT }}/fonts"
-            wrangler r2 object get --remote my-fonts/sans.zip --file "${{ env.BUILD_OUT }}/sans.zip"
-            unzip -o "${{ env.BUILD_OUT }}/sans.zip" -d "${{ env.BUILD_OUT }}/fonts"
-            rm -f "${{ env.BUILD_OUT }}/sans.zip"
+            wrangler r2 object get --remote my-fonts/fonts.zip --file "${{ env.BUILD_OUT }}/fonts.zip"
+            unzip -o "${{ env.BUILD_OUT }}/fonts.zip" -d "${{ env.BUILD_OUT }}/"
+            rm -f "${{ env.BUILD_OUT }}/fonts.zip"
 
           command: >
             pages deploy ${{ env.BUILD_OUT }}

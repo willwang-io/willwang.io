@@ -1,19 +1,34 @@
 @use "env" as *;
 @use "sass:map";
+@use "sass:string";
 
 $fonts: (
-    "MyFont": (
+    "sans": (
         normal: (
-            400: "regular",
-            700: "bold",
+            400: "sans_regular",
+            700: "sans_bold",
+        ),
+        italic: (
+            400: "sans_italic",
+            700: "sans_bold_italic",
+        ),
+    ),
+    "mono": (
+        normal: (
+            400: "mono_regular",
+        ),
+        italic: (
+            400: "mono_italic",
         )
     )
 );
 
 @mixin font-face($family, $style, $weight, $file) {
+    $font-path-with-slash: if(string.slice($font-path, -1) == "/", $font-path, "#{$font-path}/");
+
     @font-face {
-        font-family: "#{family}";
-        src: url("#{$font-path}#{$file}.woff2") format("woff2");
+        font-family: "#{$family}";
+        src: url("#{$font-path-with-slash}#{$file}.woff2") format("woff2");
         font-style: $style;
         font-weight: $weight;
         font-display: swap;
