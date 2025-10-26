@@ -1,0 +1,31 @@
+@use "env" as *;
+@use "sass:map";
+
+$fonts: (
+    "MyFont": (
+        normal: (
+            400: "regular",
+            700: "bold",
+        )
+    )
+);
+
+@mixin font-face($family, $style, $weight, $file) {
+    @font-face {
+        font-family: "#{family}";
+        src: url("#{$font-path}#{$file}.woff2") format("woff2");
+        font-style: $style;
+        font-weight: $weight;
+        font-display: swap;
+    }
+}
+
+@if $font-mode == "self-host" {
+  @each $family, $styles in $fonts {
+    @each $style, $weights in $styles {
+      @each $weight, $file in $weights {
+        @include font-face($family, $style, $weight, $file);
+      }
+    }
+  }
+}

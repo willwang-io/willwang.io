@@ -1,3 +1,6 @@
+@use "./fonts";
+@use "./env";
+
 * {
     padding: 0;
     margin: 0;
@@ -20,7 +23,7 @@ body {
   margin-right: auto;
   width: 100%;
   max-width:1500px;
-  -webkit-font-smoothing: subpixel-antialiased; /* corrects safari rendering */
+  -webkit-font-smoothing: subpixel-antialiased; 
 
   background: #fafafa;
   color: #444;

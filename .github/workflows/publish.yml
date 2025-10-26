@@ -30,7 +30,7 @@ jobs:
       
       - name: Install Sass
         run: npm install --global sass
-      
+
       - name: Build static site
         run: |
           cargo run --release
@@ -44,6 +44,14 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.45.0"
+
+          preCommands: |
+            set -eux
+            mkdir -p "${{ env.BUILD_OUT }}/fonts"
+            wrangler r2 object get --remote my-fonts/sans.zip --file "${{ env.BUILD_OUT }}/sans.zip"
+            unzip -o "${{ env.BUILD_OUT }}/sans.zip" -d "${{ env.BUILD_OUT }}/fonts"
+            rm -f "${{ env.BUILD_OUT }}/sans.zip"
 
           command: >
             pages deploy ${{ env.BUILD_OUT }}
