@@ -8,6 +8,7 @@ pub fn convert_ast_to_html(node: &AstNode, src: &[u8]) -> String {
             .map(|child| convert_ast_to_html(child, src))
             .collect::<Vec<_>>()
             .join(""),
+        AstKind::BlockQuote => wrap_with_tag("blockquote", node, src),
         AstKind::Paragraph => wrap_with_tag("p", node, src),
         AstKind::PlainText => node.span.as_str(src).to_owned(),
         AstKind::Emph => wrap_inline_tag("em", node, src),
@@ -127,6 +128,15 @@ mod tests {
     fn paragraph(children: Vec<AstNode>, start: usize, end: usize) -> AstNode {
         AstNode {
             kind: AstKind::Paragraph,
+            span: Span { start, end },
+            attrs: None,
+            children,
+        }
+    }
+
+    fn blockquote(children: Vec<AstNode>, start: usize, end: usize) -> AstNode {
+        AstNode {
+            kind: AstKind::BlockQuote,
             span: Span { start, end },
             attrs: None,
             children,
@@ -255,6 +265,17 @@ mod tests {
             html,
             "<p><a href=\"http://example.com\">My link text</a></p>"
         );
+    }
+
+    #[test]
+    fn renders_blockquote() {
+        let src = "> quote";
+        let quote =
+            blockquote(vec![paragraph(vec![plain(2, src.len())], 2, src.len())], 0, src.len());
+        let doc = document(vec![quote], src.len());
+
+        let html = convert_ast_to_html(&doc, src.as_bytes());
+        assert_eq!(html, "<blockquote><p>quote</p></blockquote>");
     }
 
     #[test]

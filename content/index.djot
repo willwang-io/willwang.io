@@ -3,3 +3,7 @@ Hey, I’m a software developer who, after work, indulges in coding, typing, cub
 This is my personal website, where I post occasional notes about what I learn and experience. It used to run on Next.js and Markdown. I am currently refactoring it to my own site static site generator with Rust, which includes a custom parser that produces an abstract syntax tree and an HTML renderer for the [Djot](https://djot.net/) markup. Parser and renderer are basically complete. I am closing the loop on file, media, and routing to make blog writing effortless.
 
 It currently supports essential inline syntaxes, such as: _emphasize_, *strong*, ~sub~, ^sup^, {+insert+}, {-delete-}, and {=highlighted=}. These can be {={+{-*_^nested^_*-}+}=}, of course. It also handles `verbatim (code)` and embedded math like $`a^2+b^2=c^2` or $$`\sum_{n=0} ^ {\infty} \frac {f^{(n)}(a)}{n!} (x-a)^{n},` which are essential for my needs. 
+
+> Block quote is essentially a `blockquote` tag wrap some other blocks, for instance, paragraph, list, etc. 
+>
+> Here is another block inside this block quote.  

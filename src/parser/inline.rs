@@ -1,13 +1,10 @@
 use crate::ast::{AstKind, AstNode, DelimKind, Span};
-use crate::parser::context::Context;
 
-pub fn parse_inline(ctx: &mut Context) -> Vec<AstNode> {
-    let bytes = ctx.current_line().as_bytes();
+pub fn parse_inline(line: &str, offset: usize) -> Vec<AstNode> {
+    let bytes = line.as_bytes();
     let n = bytes.len();
     let mut nodes: Vec<AstNode> = Vec::new();
     let mut delim_stack: Vec<Delimiter> = Vec::new();
-
-    let offset = ctx.line_range[ctx.cur_line_position].start;
 
     let mut last_emit = 0;
     let mut idx = 0;
@@ -408,16 +405,21 @@ mod tests {
     use rstest::rstest;
 
     use crate::ast::{AstKind, AstNode, Span};
-    use crate::parser::context::Context;
     use crate::parser::inline::parse_inline;
 
     #[test]
     fn simple_text() {
         let line = indoc! { "This is a simple line." };
-        let mut ctx = Context::new(line);
-
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expect = vec![plain(0, 22)];
+        assert_eq!(expect, actual);
+    }
+
+    #[test]
+    fn spans_offset_is_applied() {
+        let line = "offset";
+        let actual = parse_inline(line, 5);
+        let expect = vec![plain(5, 11)];
         assert_eq!(expect, actual);
     }
 
@@ -428,9 +430,7 @@ mod tests {
     #[case::strong("^", AstKind::Sup)]
     fn inline_syntax_with_single_char_delimiter(#[case] delim: &str, #[case] kind: AstKind) {
         let line = format!("{delim}some text{delim}");
-        let mut ctx = Context::new(line.as_str());
-
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(&line, 0);
         let expect = vec![with_children(kind, 1, 10, vec![plain(1, 10)])];
 
         assert_eq!(expect, actual);
@@ -439,8 +439,7 @@ mod tests {
     #[test]
     fn multiple_nodes() {
         let line = "Text with _emphasized_.";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![
             plain(0, 10),
             with_children(AstKind::Emph, 11, 21, vec![plain(11, 21)]),
@@ -459,8 +458,7 @@ mod tests {
         #[case] start: usize,
         #[case] end: usize,
     ) {
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![with_children(kind, start, end, vec![plain(start, end)])];
         assert_eq!(expected, actual);
     }
@@ -468,8 +466,7 @@ mod tests {
     #[test]
     fn multi_syntaxes_in_one_line() {
         let line = "_emphasized_ and *strong*";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![
             with_children(AstKind::Emph, 1, 11, vec![plain(1, 11)]),
             plain(12, 17),
@@ -481,8 +478,7 @@ mod tests {
     #[test]
     fn nested_inline_nodes() {
         let line = "_*they can be nested*_";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![with_children(
             AstKind::Emph,
             1,
@@ -495,8 +491,7 @@ mod tests {
     #[test]
     fn inline_code_simple() {
         let line = "`code`";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![code(1, 5)];
         assert_eq!(expected, actual);
     }
@@ -504,8 +499,7 @@ mod tests {
     #[test]
     fn inline_code_with_backtick_inside() {
         let line = "``Verbatim with a backtick` character``";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![code(2, line.len() - 2)];
         assert_eq!(expected, actual);
     }
@@ -513,8 +507,7 @@ mod tests {
     #[test]
     fn inline_code_with_padding_for_backtick() {
         let line = "`` `foo` ``";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![code(3, 8)];
         assert_eq!(expected, actual);
     }
@@ -522,8 +515,7 @@ mod tests {
     #[test]
     fn inline_code_unterminated_extends() {
         let line = "`foo bar";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
         let expected = vec![code(1, line.len())];
         assert_eq!(expected, actual);
     }
@@ -531,8 +523,7 @@ mod tests {
     #[test]
     fn inline_math() {
         let line = "Einstein derived $`e=mc^2`.";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
 
         let dollar_pos = line.find('$').unwrap();
         let open_tick = line.find('`').unwrap();
@@ -549,8 +540,7 @@ mod tests {
     #[test]
     fn display_math() {
         let line = "Pythagoras proved $$` x^n + y^n = z^n `";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
 
         let dollar_pos = line.find('$').unwrap();
         let open_tick = line.find('`').unwrap();
@@ -566,8 +556,7 @@ mod tests {
     #[test]
     fn link_basic() {
         let line = "[My link text](http://example.com)";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
 
         let label_start = line.find('[').unwrap() + 1;
         let label_end = line.find(']').unwrap();
@@ -588,8 +577,7 @@ mod tests {
     #[test]
     fn image_basic() {
         let line = "![picture of a cat](cat.jpg)";
-        let mut ctx = Context::new(line);
-        let actual = parse_inline(&mut ctx);
+        let actual = parse_inline(line, 0);
 
         let label_start = line.find('[').unwrap() + 1;
         let label_end = line.find(']').unwrap();

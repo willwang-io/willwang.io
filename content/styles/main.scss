@@ -16,6 +16,13 @@ p, div.p, blockquote, li {
     line-height: 1.42;
 }
 
+blockquote {
+  padding: 1.5em 2em 0.5em 2em;
+  font-size: 85%;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background: #fafafa;
+}
 
 body {
   @include fonts.family(sans);
