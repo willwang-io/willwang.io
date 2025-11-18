@@ -1,0 +1,23 @@
+#doc {
+    background: white;
+    border: 0px solid #aaa;
+    border-top: 0px;
+    margin: 0 auto;
+    padding: 2rem 3rem;
+    padding-left: min(5rem);
+    padding-right: min(5rem);
+    max-width: 900px;
+}
+
+@media (min-aspect-ratio:2/3) and (min-width:800px) {
+    #doc {
+        max-width: 900px;
+        gap: 2rem;
+    }
+}
+
+@media all and (max-width:600px) {
+    #doc {
+        padding: 1rem;
+    }
+}

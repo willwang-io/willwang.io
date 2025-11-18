@@ -1,0 +1,12 @@
+a, a:visited {
+  color: #002FA7;
+  text-decoration: none;
+}
+
+a.subhead {
+  color: inherit;
+}
+
+a:hover, a.pe-index:hover {
+  opacity: 0.5;
+}

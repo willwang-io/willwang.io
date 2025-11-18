@@ -1,0 +1,10 @@
+@mixin serif {
+    text-rendering: optimizeLegibility;
+    font-family: heliotrope, Georgia, serif;
+    font-feature-settings: 'ss01' 1;
+}
+
+@mixin mono {
+    font-family: mono, monospace;
+    font-feature-settings: 'ss01' 0, 'ss02' 1;
+}

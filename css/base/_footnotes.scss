@@ -1,0 +1,27 @@
+section[role="doc-endnotes"] > hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 1em;
+}
+
+section[role="doc-endnotes"] > ol {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  margin-left: 1rem;
+  counter-reset: footnote;
+}
+
+section[role="doc-endnotes"] > ol > li {
+  counter-increment: footnote;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.4em;
+  align-items: flex-start;
+}
+
+section[role="doc-endnotes"] > ol > li::before {
+  content: counter(footnote);
+  font-size: 0.8em;
+  transform: translateY(-0.30em);
+  margin-left: -1rem;
+}

@@ -1,0 +1,56 @@
+@use "../abstracts/mixins" as *;
+
+body {
+  @include serif;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width:1500px;
+  -webkit-font-smoothing: subpixel-antialiased; 
+
+  background: #fafafa;
+  color: #444;
+  line-height: 1.4;
+}
+
+p, div.p, blockquote, li {
+    margin-bottom: 1rem;
+    line-height: 1.42;
+}
+
+blockquote {
+  padding: 1.5em 2em 0.5em 2em;
+  font-size: 85%;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background: #fafafa;
+}
+
+h1, h2, h3 {
+    margin-bottom: 0.5em;
+}
+
+h1, h2 {
+    line-height: 1.2em;
+}
+
+h1 {
+    font-size: 2.6em;
+    line-height: 0.9em;
+    font-weight: lighter;
+    font-feature-settings: 'case' 1;
+    font-family: "headline";
+    text-transform: uppercase;
+}
+
+h2 {
+    margin-top: 1.2em;
+    margin-bottom: 0.25em;
+    font-size: 1em;
+    font-feature-settings: 'smcp' 1, 'c2sc' 1, 'ss01' 1;
+    font-weight: bold;
+}
+
+pre, code {
+    @include mono;
+}
