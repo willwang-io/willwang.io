@@ -1,35 +1,54 @@
-mod ast;
-mod file_util;
-mod parser;
+mod content;
 mod render;
 
-use std::path::Path;
-use tera;
+use anyhow;
+use serde::Deserialize;
+use std::collections::HashMap;
+use std::path::PathBuf;
 
-use file_util::{IN_DIR, OUT_DIR, read_dir, read_file, write_file};
-use parser::parse_document;
-use render::convert_ast_to_html;
+#[derive(Deserialize)]
+struct SiteConfig {
+    content_dir: PathBuf,
+    public_dir: PathBuf,
+    main_title: String,
+    thread: Option<HashMap<String, ThreadEntry>>,
+    page: Option<HashMap<String, PageEntry>>,
+}
+
+#[derive(Deserialize)]
+struct ThreadEntry {
+    sub_title: Option<String>,
+    path: PathBuf,
+}
+
+#[derive(Deserialize)]
+struct PageEntry {
+    sub_title: Option<String>,
+    filename: PathBuf,
+}
+
+fn run() -> anyhow::Result<()> {
+    let site_config: SiteConfig = toml::from_str(
+        &std::fs::read_to_string("site.toml").expect("Should be able to read site.toml"),
+    )?;
+
+    let threads = site_config.thread.unwrap_or_default();
+    for (_, config) in threads {
+        let from = site_config.content_dir.join(&config.path);
+        let to = site_config.public_dir.join(&config.path);
+        if let Err(e) = content::render_dir(&from, &to) {
+            eprintln!("Error while render {:?} to {:?}: {e}", from, to);
+        }
+    }
+
+    let page = site_config.page.unwrap_or_default();
+
+    Ok(())
+}
 
 fn main() {
-    let tera = tera::Tera::new("templates/**/*.html").unwrap();
-    let mut tera_ctx = tera::Context::new();
-
-    let files = read_dir(IN_DIR).unwrap();
-
-    for path in files {
-        if !path.is_file() {
-            continue;
-        }
-        let content = read_file(&path).unwrap();
-        let ast_root = parse_document(&content);
-
-        let rendered_html = convert_ast_to_html(&ast_root, &content.as_bytes());
-        tera_ctx.insert("post", &rendered_html);
-        let out_content = tera.render("base.html", &tera_ctx).unwrap();
-
-        let mut output_path = path;
-        output_path.set_extension("html");
-        let path = Path::new(OUT_DIR).join(output_path.strip_prefix("content").unwrap());
-        write_file(&path, &out_content).unwrap();
+    if let Err(e) = run() {
+        eprintln!("error: {e}");
+        std::process::exit(1);
     }
 }
