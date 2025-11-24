@@ -2,13 +2,14 @@ use jotdown::{Container, Event};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize, PartialEq)]
-struct Metadata {
-    title: String,
-    date: toml::value::Datetime,
-    draft: bool,
+pub struct Metadata {
+    pub title: String,
+    pub date: toml::value::Datetime,
+    pub keywords: Option<Vec<String>>,
+    pub description: Option<String>,
 }
 
-fn parse_djot(content: &str) -> (Option<Metadata>, String) {
+pub fn parse_djot(content: &str) -> (Metadata, String) {
     let events: Vec<Event> = jotdown::Parser::new(&content).collect();
 
     let mut in_meta = false;
@@ -44,9 +45,14 @@ fn parse_djot(content: &str) -> (Option<Metadata>, String) {
         .collect();
 
     let metadata = if have_meta {
-        toml::from_str::<Metadata>(&meta_buf).ok()
+        match toml::from_str::<Metadata>(&meta_buf) {
+            Ok(m) => m,
+            Err(err) => {
+                panic!("Metadata parse failed: {err}\ninput:\n{meta_buf}");
+            }
+        }
     } else {
-        None
+        panic!("All pages must have a metadata section.")
     };
 
     let html = jotdown::html::render_to_string(body_events.into_iter());
@@ -61,33 +67,59 @@ mod tests {
     use super::*;
 
     #[test]
-    fn djot_with_metadata() {
+    fn with_metadata() {
         let content = concat!(
             "```=toml\n",
             "title = \"this is a title\"\n",
             "date = 2025-11-16\n",
-            "draft = true\n",
+            "keywords = [\"foo\", \"bar\"]\n",
+            "description = \"Lorem ipsum dolor sit amet\"\n",
             "```\n",
             "\n",
             "hello world\n",
         );
         let (metadata, html) = parse_djot(content);
         assert_eq!(
-            Some(Metadata {
+            Metadata {
                 title: String::from("this is a title"),
                 date: toml::value::Datetime::from_str("2025-11-16").unwrap(),
-                draft: true,
-            }),
+                keywords: Some(vec![String::from("foo"), String::from("bar")]),
+                description: Some(String::from("Lorem ipsum dolor sit amet")),
+            },
             metadata
         );
         assert_eq!("\n<p>hello world</p>\n", &html)
     }
 
     #[test]
-    fn djot_without_metadata() {
+    #[should_panic]
+    fn without_metadata() {
         let content = "hello world";
+        let _ = parse_djot(content);
+    }
+
+    #[test]
+    fn only_the_first_raw_toml_will_be_the_metadata() {
+        let content = concat!(
+            "```=toml\n",
+            "title = \"this is a title\"\n",
+            "date = 2025-11-16\n",
+            "```\n",
+            "\n",
+            "hello world\n",
+            "```=toml\n",
+            "foo = \"bar\"\n",
+            "```\n",
+        );
         let (metadata, html) = parse_djot(content);
-        assert_eq!(None, metadata);
-        assert_eq!("<p>hello world</p>\n", &html)
+        assert_eq!(
+            Metadata {
+                title: String::from("this is a title"),
+                date: toml::value::Datetime::from_str("2025-11-16").unwrap(),
+                keywords: None,
+                description: None,
+            },
+            metadata
+        );
     }
 }
