@@ -1,6 +1,8 @@
 use jotdown::{Container, Event};
 use serde::Deserialize;
 
+use crate::{AppError, Result};
+
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct Metadata {
     pub title: String,
@@ -9,7 +11,7 @@ pub struct Metadata {
     pub description: Option<String>,
 }
 
-pub fn parse_djot(content: &str) -> (Metadata, String) {
+pub fn parse_djot(content: &str) -> Result<(Metadata, String)> {
     let events: Vec<Event> = jotdown::Parser::new(&content).collect();
 
     let mut in_meta = false;
@@ -45,19 +47,14 @@ pub fn parse_djot(content: &str) -> (Metadata, String) {
         .collect();
 
     let metadata = if have_meta {
-        match toml::from_str::<Metadata>(&meta_buf) {
-            Ok(m) => m,
-            Err(err) => {
-                panic!("Metadata parse failed: {err}\ninput:\n{meta_buf}");
-            }
-        }
+        toml::from_str::<Metadata>(&meta_buf)?
     } else {
-        panic!("All pages must have a metadata section.")
+        return Err(AppError::MissingMetadata);
     };
 
     let html = jotdown::html::render_to_string(body_events.into_iter());
 
-    (metadata, html)
+    Ok((metadata, html))
 }
 
 #[cfg(test)]
@@ -78,7 +75,7 @@ mod tests {
             "\n",
             "hello world\n",
         );
-        let (metadata, html) = parse_djot(content);
+        let (metadata, html) = parse_djot(content).expect("parse_djot failed");
         assert_eq!(
             Metadata {
                 title: String::from("this is a title"),
@@ -111,7 +108,7 @@ mod tests {
             "foo = \"bar\"\n",
             "```\n",
         );
-        let (metadata, html) = parse_djot(content);
+        let (metadata, html) = parse_djot(content).expect("parse_djot failed");
         assert_eq!(
             Metadata {
                 title: String::from("this is a title"),
