@@ -4,4 +4,16 @@ date = 2025-10-01
 keywords = ["blog", "personal website"]
 ```
 
-Hey, I'm a software developer who, after work, indulges in coding, typing and stenotyping, cubing, and long-distance running. On the other hand, I am also interested in calligraphy, chirography, and typography. Here is my personal website, where I post occasional notes about what I learn and experience.
+### ~/willwang.io
+
+Here is my personal website, where I post occasional notes about what I learn and experience.
+
+## Threads
+
+Threads are collections of posts that either extend what would fit in a single post or build a more coherent narrative than tags. 
+
+::: card
+# [Project Euler Notes](/euler)
+
+Written solutions to a selection of Project Euler problems I’ve worked through.
+:::

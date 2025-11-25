@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache cargo
         uses: Swatinem/rust-cache@v2
-
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -35,16 +35,29 @@ jobs:
         run: |
           cargo run --release
 
-      - name: Compile SASS
+      - name: Build CSS 
         run: |
-          sass css/:public/css --no-source-map
-      
+          sass css/:public/styles --no-source-map
+
+      - name: Install fonttools
+        run: pip install fonttools brotli
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4.45.0"
+
+          # Download, unzip, and trim fonts
+          preCommands: |
+            set -eux
+            mkdir -p fonts-work
+            wrangler r2 object get --remote my-fonts/blog.zip --file fonts-work/blog.zip
+            unzip -o fonts-work/blog.zip -d fonts-work/
+            chmod +x tools/glyph_trimmer.sh
+            ./tools/glyph_trimmer.sh
+            rm -rf fonts-work
 
           command: >
             pages deploy ${{ env.BUILD_OUT }}

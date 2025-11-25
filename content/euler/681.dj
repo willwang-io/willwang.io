@@ -1,0 +1,73 @@
+```=toml
+title = "681. Maximal Area"
+date = 2025-10-15
+keywords = ["Project Euler", "Bretschneider formula", "integer quadrilaterals"]
+description = "Walkthrough of turning a quadrilateral area problem into a number-theoretic algorithm using Bretschneider's formula"
+```
+
+# 681. Maximal Area
+
+[Problem statement](https://projecteuler.net/problem=681)
+
+## From quadrilaterals to a clean formula
+
+We are given positive integers $`a\leq b\leq c\leq d` that can form a quadrilateral. For each such quadruple the maximal possible area (over all shapes with those side lengths) is called $`M(a,b,c,d)`. We only keep quadruples where this maximal area is a positive integer at most $`n`. For every valid quadruple we add the perimeter $`a+b+c+d` to a big sum, denoted $`SP(n)`. The goal is to compute $`SP(1 000 000)` in a reasonable time. 
+
+Bretschneider's formula tells us that for a quadrilateral with sides $`a, b, c, d` and semiperimeter $`p=(a+b+c+d)/2`, the maximal area is obtained when the quadrilateral is cyclic.[^1] In that case the area simplifies to $$`M(a,b,c,d)^2=(p-a)(p-b)(p-c)(p-d).` If we call this maximal area $`\alpha`, the condition "maximal area is an integer" becomes $$`\alpha^2=(p-a)(p-b)(p-c)(p-d), \quad \alpha\in \{\alpha,\dots,n\}.` The entire geometric part now sits in this one equation. 
+
+## A useful change of variables
+
+Introduce four new integers $$`u=p-a,\quad v=p-b,\quad w=p-c,\quad t=p-d.` Then the area condition becomes $$`\alpha^2=uvwt.` We can express the sides back in terms of $`u,v,w,t`. The perimeter is $`a+b+c+d=2p`, but also equals $`(p-u)+(p-v)+(p-w)+(p-t)=4p-(u+v+w+t)`. Equating these gives $$`2p=4p-(u+v+w+t),\quad \text{so}\quad p=\frac{u+v+w+t}{2}.` Substituting this into the definitions of $`a,b,c,d` yields $$`\begin{align*}
+a&=\frac{v+w+t-u}{2},\\
+b&=\frac{u+w+t-v}{2},\\
+c&=\frac{u+v+t-w}{2},\\
+d&=\frac{u+v+w-t}{2}.\\
+\end{align*}` The perimeter becomes very simple $$`a+b+c+d=2p=u+v+w+t.` So once we know $`u,v,w,t,` we can read off both the sides and the perimeter using only integer arithmetic.
+
+## Encoding the ordering and validity conditions
+
+The problem requires $`a\leq b\leq c\leq d`. Look at the differences $$`b-a=u-v,\quad c-b=v-w,\quad d-c=w-t.` If we enforce $`u\geq v\geq w\geq t`, then these three differences are nonnegative, so the sides are automatically ordered. It is much easier to select factorizations with ordered factors than to sort or handle permutations later. 
+
+Now we ask when the sides are positive integers. First, all sides are of the form (something) divided by $`2`. Let $`S=u+v+w+t`. Then $`p=S/2`, and each side expression has numerator with the same parity as $`S`. So $`S` must be even, otherwise we would get half-integers. 
+
+For positivity, it is enough to look at $`a`, which is the smallest side: $$`a=\frac{v+w+t-u}{2}.` We need $`v+w+t-u>0`. Under the ordering $`u\geq v\geq w\geq t`, once this holds, the expressions for $`b,c,d` are automatically larger, so they are positive too.
+
+At this point we have clean dictionary. For a fixed $`\alpha`, valid side quadruples with $`M(a,b,c,d)=\alpha` and $`a\leq b\leq c \leq d` correspond exactly to integer quadruples $`u\geq v\geq w\geq t\geq 1` such that $`uvwt=\alpha^2`, the sum $`S=u+v+w+t` is even, and $`v+w+t>u`. The perimeter is then simply $`S`. 
+
+## Rewriting the target sum
+
+The quantity we want is $$`SP(n) = \sum_{a\leq b\leq c\leq d\\0<M(a,b,c,d)\leq n} (a + b + c + d).` For each valid quadrilateral we can associate its integer maximal area $`\alpha`. Using the dictionary above, we can rewrite the sum in terms of factorizations. For each integer $`\alpha` from $`1` to $`n`, consider all quadruples $`u\geq u \geq w\geq w\geq t \geq 1` such that $`uvwt=\alpha^2`, the sum $`S=u+v+w+t` is even, and $`u+w+t>u`. For each such quadruple, we add $`S` to the global total. Summing over all $`\alpha` gives $`SP(n)`. 
+
+This is already a direct algorithmic plan: loop over $`\alpha`, factors $`\alpha^2`, enumerate ordered factor quadruples, apply two simple integer checks, and accumulate the perimeter. 
+
+The remaining question is how to enumerate all quadruples $`u\geq u \geq w\geq w\geq t` with product $`\alpha^2` efficiently. 
+
+## Enumerating factor quadruples of $`N=\alpha^2`
+
+A practical approach is to work with the list of all divisors of $`N=\alpha^2`. For each $`\alpha`, factor $`\alpha` into primes, then generate all divisors of $`\alpha^2` from that factorization and sort them. Call this sorted list `divs`. 
+
+Now you can choose the factors in three nested loops, with pruning at each level. First pick $`t`, the smallest factor in the quadruple, from `divs` in ascending order. Since all four factors are at least $`t`, the product is at least $`t^4`. If $`t^4` is already larger than $`N`, no bigger $`t` can work, so you break the outer loop. For each $`t` that passes, set $`N_1=N/t`.
+
+Next pick $`w`, the next factor, from `divs` but only those that divide $`N_1` and are at least $`t`. Here you can prune using the lower bound $`tw^3\leq N`. In the most compact case the remaining three factors are all equal to $`w`, so if $`tw^3>N`, any choice of $`u` and $`w` would overshoot the product, and you can stop the loop over $`w`. For each $`w` passes, set $`N_2=N_1/w`. 
+
+Finally pick $`v` from `divs` that divide $`N_2`, are at least $`w`, and satisfy $`v^2\leq N_2`. Then set $`u=N_2/v`. The condition on $`v^2` guarantees $`u\geq v`. At this point you have a candidate quadruple $`(u,v,w,t)` with the correct product and ordering. 
+
+For each candidate quadruple, compute the sum $`S=u+v+w+t`. If $`S` is odd, skip it, since it would give half-integer sides. If $`S` is even, check whether $`v+w+t>u`. If that fails, $`a\leq 0`, so the sides are not valid. Otherwise you have found one quadrilateral with maximal area $`\alpha`, and you add $`S` to your running total.
+
+## Factoring and divisor generation
+
+A standard smallest prime factor sieve is enough since $`\alpha` goes up to $`10^6`. From the prime factorization of $`\alpha`, it is straightforward to build the divisors of $`\alpha^2`. If $`\alpha=\prod p_k^{e_k}`, then $`\alpha^2=\prod p_k^{2e_k}`, and every divisor of $`\alpha^2` has the form $`\prod p_k^{f_k}` where each exponent $`f_k` runs from $`0` up to $`2e_k`. A short recursive function can generate these divisor values into a vector, which you then sort. 
+
+## Program outline and benchmarks
+
+Putting this together, the program structure is simple. First precompute the smallest prime factor table up to $`n`. 
+Then for each $`\alpha` from $`1` to $`n`, generate and sort the divisors of $`\alpha^2`, enumerate all ordered factor quadruples as described, apply the parity and positivity test, and add $`S=u+v+w+t` to an variable `total` whenever those tests pass. After the loop finishes, the `total` holds $`SP(n)`. 
+
+My program written in C++17 roughly takes 78 seconds to output the correct answer on an Apple M2 Ultra. 
+
+::: edited
+Last edited on Oct 15, 2025
+:::
+
+[^1]: [Area of cyclic quadrilateral
+](https://en.wikipedia.org/wiki/Cyclic_quadrilateral#:~:text=The%20area%20K%20of%20a,also%20be%20proved%20using%20calculus)

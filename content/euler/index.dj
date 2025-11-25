@@ -1,0 +1,21 @@
+```=toml
+title = "Project Euler Note"
+date = 2025-10-15
+keywords = ["Project Euler", "puzzles", "math", "algorithm", "solution writing"]
+```
+
+# Project Euler Notes 
+
+![My PE badge](https://projecteuler.net/profile/will_wang.png)
+
+Here I share written solutions to a selection of Project Euler problems I've worked through, highlighting the methods and reasoning behind each one.
+
+I use C++17, Rust (1.89.0), or Python3 to produce the solutions without parallel programming, unless stated otherwise. 
+
+## Notes 
+
+::: card
+# [681. Maximal Area](/euler/681.html)
+
+Difficulty rating: 50% | Last edited: Oct 15, 2025
+:::

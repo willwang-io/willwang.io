@@ -1,0 +1,24 @@
+.card {
+    display: block;
+    border-bottom: 1px solid #444;
+    margin-top: 1em;
+    margin-bottom: 0.25em;
+    line-height: 1.25;
+}
+
+.card a {
+    color: #444;
+}
+
+.card h1 {
+  font-style: inherit;
+  font-size: 1.2em;
+  width: inherit;
+  font-family: inherit;
+  line-height: inherit;
+}
+
+.card p {
+    font-size: 0.9em;
+    margin-bottom: 0.75em;
+}

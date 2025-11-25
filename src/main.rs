@@ -44,8 +44,6 @@ fn process_threads_post(content_root: &Path) -> io::Result<()> {
             }
         };
         let _ = write_with_dirs(&public_path, &content);
-
-        println!("{:?}: {:?}", entry, metadata);
     }
     Ok(())
 }
