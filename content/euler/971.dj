@@ -1,0 +1,43 @@
+```=toml
+title = "971. Modular Polynomial Composition"
+date = 2025-11-25
+keywords = ["Project Euler", "modular arithmetic", "prime numbers"]
+description = ""
+```
+
+# 971. Modular Polynomial Composition
+
+[Problem statement](https://projecteuler.net/problem=971)
+
+The function in the problem hides a very small structure inside a very large space. The trick is to expose that structure and count cycles there instead of working modulo a huge prime directly.
+
+We start from a prime $`p` of the form $`5k-4` and the map $$`f_p(x)=x^k+x\pmod p.` We look at the functional graph on $`\{0,\dots, p-1\}` where each vertex $`x` has one outgoing edge to $`f_p(x)`. This graph decomposes into cycles with trees feeding into them. The quantity $`C(p)` counts the vertices that line on cycles. 
+
+The prime condition $`p=5k-4` implies $`p\equiv 1 \pmod 5.` Write $$`p-1=5e, \quad e=\frac{p-1}{5}.` From $`p=5k-4` we also get $$`k=\frac{p+4}{5}=e+1.` In the multiplicative group $`\mathbb{F}^{\times}_{p}`, exponents are taken modulo $`p-1`, so for nonzero $`x` we can rewrite $$`x^k=x^{e+1}=x^e\times x.` Hence $$`f(x)=x^k+x=x^{e+1}+x=x(x^e+1).`
+
+This factorization is the main algebraic step. 
+
+Now define $`y=x^e` for $`x\neq 0`. Because $`p-1=5e`, we have $$`y^5=x^{5e}=x^{p-1}\equiv 1 \pmod p.` So $`y` always lives among the five 5th roots of unity in $`\mathbb{F}^{\times}_{p}`. Call them $`\{1,z,z^2,z^3,z^4\}`, where $`z` is a primitive 5th root of unity. 
+
+If we iterate $`x_{n+1}=f(x_n)`, then $$`x_{n+1}=x_n(x^e_n+1),` and raising to the $`e` power gives $$`\Phi(y)=y(y+1)^e\pmod p,` and every orbit $`y_0, y_1, \dots` stays inside the set $`\{1,z,z^2,z^3,z^4\}`. In other words, the entire dynamic on $`\mathbb{F}^{\times}_{p}` collapses to a functional graph on five nodes, indexed by exponents of $`z`. 
+
+For each $`y` in that set, the equation $`x^e=y` has exactly $`e=(p-1)/5` solutions, because the multiplicative group has size $`5e`. So the nonzero field elements split into five cosets, each mapped to one of the five roots. The point $`x=0` is separate and satisfies $`f(0)=0`, so it is always a fixed point. 
+
+The crucial dynamical fact is that the cycles upstairs correspond exactly to cycle downstairs. If $`x` is periodic under $`f`, then $`y=x^1` is periodic under $`\Phi`. Conversely, if a root $`y` lies on a cycle of $`\Phi`, then each of the $`e` elements $`x` with $`x^e=y` lies on a cycle of $`f`. The reasoning uses the coset structure and the fact that multiplying by $`y+1` is a bijection on each coset. If $`y` is not on a cycle of $`\Phi`, its coset elements are preperiodic but not periodic. 
+
+Let $`q` be the number of 5th roots of unity that are on cycle of $`\Phi`. Then among nonzero $`x`, we have exactly $`q\times e` periodic points, and together with the fixed point at 0 this gives $$`C(p)=1+q\times e = 1 + q\times \frac{p-1}{5}.` So instead of exploring a graph of size $`p`, we only need to understand the 5 node graph of $`\Phi`, compute $`q`, and plug into this formula. 
+
+For a given prime $`p\equiv 1\pmod 5:`
+
+1. Compute $`e=(p-1)/5.`
+2. Find a primitive 5th root of unity $`z`. A practical way: start with a small base $`a`, compute $`z=a^e\mod p`, and if $`z=1` then pick a different $`a`. Once $`z\neq 1`, the set $`\{1,z,z^2,z^3,z^4\}` is the full set of the 5th roots.
+3. Build an array of these five values $`y_0, \dots, y_4`.
+4. For each $`y_j`, compute $`\Phi(y_j)=y_j(y_j+1)^e\mod p` and find which $`y_k` it equals, giving a map $`F(j)=k` on the indices $`0,\dots,4`.
+5. In this 5 node graph, find how many nodes are on cycles. That is $`q`.
+6. Compute $`C(p)=1+q\times e`.
+
+The last part is to sum over all primes up to $`N` with $`p\equiv 1\pmod 5`. You run a prime sieve up to $`10^8`, filter primes by the congruence, and for each such prime apply the constant time procedure above. This gives you $`C(p)` for each prime, and their sum is $`S(10^8)`. 
+
+::: edited
+Last edited on Nov 24, 2025
+:::
