@@ -26,6 +26,6 @@ ol li::before {
     top: -0.15em;
     counter-increment: foobar;
     content: counter(foobar);
-    font-family: "concourse-index";
+    font-family: "index";
     font-feature-settings: 'ss01' 0;
 }
