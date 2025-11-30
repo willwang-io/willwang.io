@@ -9,11 +9,19 @@ description = ""
 
 ![My PE badge](https://projecteuler.net/profile/will_wang.png)
 
-Here I share written solutions to a selection of Project Euler problems I've worked through, highlighting the methods and reasoning behind each one.
+Here I share written solutions to a selection of Project Euler problems I’ve worked through, highlighting the methods and reasoning behind each one. I do not share full solutions directly, and I withhold any detailed insights until the leaderboard (the first 100 fastest solvers) has been filled.
 
-I use C++17, Rust (1.89.0), or Python3 to produce the solutions without parallel programming, unless stated otherwise. 
+I use C++17, Rust (1.89.0), or Python3 to produce the solutions, without parallel programming unless stated otherwise. 
+
+Problems with a difficulty rating of "N/A" are [recent problems](https://projecteuler.net/recent), meaning their difficulty has not yet been determined.  
 
 ## Notes 
+
+::: card
+# [972. Hyperbolic Plane (PENDING)](/euler/972.html)
+
+Difficulty rating: N/A | Last edited: Nov 30, 2025 | Rank: 52nd
+:::
 
 ::: card
 # [971. Modular Polynomial Composition
