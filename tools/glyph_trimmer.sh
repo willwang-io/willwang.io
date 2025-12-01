@@ -11,5 +11,5 @@ for f in fonts-work/*.woff2; do
         --output-file="public/assets/$base" \
         --flavor=woff2 \
         --ignore-missing-glyphs \
-        --layout-features=ss01,ss02
+        --layout-features=ss01,ss02,smcp,c2sc
 done

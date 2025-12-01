@@ -53,4 +53,12 @@ h2 {
 
 pre, code {
     @include mono;
+    font-feature-settings: 'ss01' 0, 'ss02' 1;
+    font-size: 95%;
+}
+
+pre {
+    margin-bottom: 1em;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
