@@ -1,0 +1,34 @@
+```=toml
+title = "2025 Advent of Code"
+date = 2025-12-01
+keywords = ["Advent of Code 2025", "puzzles"]
+description = ""
+```
+
+# 2025 Advent of Code Summary
+
+Note: the number of problems has been changed from 25 to 12 this year.
+
+```
+Day   -Part 1-   -Part 2-
+  3   00:03:38   00:09:51
+  2   00:05:01   00:23:55
+  1   00:02:54   00:12:32
+```
+
+## Day 1
+
+1. Modular arithmetic.
+2. Brute-force.
+
+## Day 2
+
+1. Brute-force. For each range `(l, r)`, check all integers from 1 up to half the number of digits in `r`, inclusive. 
+2. Similar idea, but remember to handle duplicates. For example, `1111` can be represented as `1` repeated four times or `11` repeated two times. 
+
+## Day 3
+1. Brute-force.
+2. Treat each row as: "remove some digits so the remaining 12 are as big as possible from left to right". Hint: use monotonic stack. 
+
+{.edited}
+Last edited: Dec 02, 2025

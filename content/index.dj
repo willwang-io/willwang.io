@@ -9,6 +9,11 @@ description = ""
 
 Here is my personal website, where I post occasional notes about what I learn and experience.
 
+## Posts
+::: card
+# [2025 Advent of Code Summary](/archive/aoc2025)
+:::
+
 ## Threads
 
 Threads are collections of posts that either extend what would fit in a single post or build a more coherent narrative than tags. 
