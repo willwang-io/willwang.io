@@ -62,3 +62,8 @@ pre {
     white-space: pre-wrap;
     word-wrap: break-word;
 }
+
+.date {
+    font-size: 1em;
+    font-feature-settings: 'smcp' 1, 'c2sc' 1, 'ss01' 1;
+}
