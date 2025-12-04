@@ -11,6 +11,7 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ```
 Day   -Part 1-   -Part 2-
+  4   00:04:18   00:08:48
   3   00:03:38   00:09:51
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
@@ -30,5 +31,9 @@ Day   -Part 1-   -Part 2-
 1. Brute-force.
 2. Treat each row as: "remove some digits so the remaining 12 are as big as possible from left to right". Hint: use monotonic stack. 
 
+## Day 4
+1. Simulation.
+2. Simulation, but multiple rounds.  
+
 {.edited}
-Last edited: Dec 02, 2025
+Last edited: Dec 03, 2025
