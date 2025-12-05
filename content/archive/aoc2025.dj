@@ -11,29 +11,37 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ```
 Day   -Part 1-   -Part 2-
+  5   00:03:50   00:06:40
   4   00:04:18   00:08:48
   3   00:03:38   00:09:51
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
 ```
 
-## Day 1
+## Day 5
 
-1. Modular arithmetic.
-2. Brute-force.
+1. Brute-force.
+2. [Merge intervals](https://leetcode.com/problems/merge-intervals/description/).
+
+## Day 4
+
+1. Simulation.
+2. Simulation, but multiple rounds.  
+
+## Day 3
+
+1. Brute-force.
+2. Treat each row as: "remove some digits so the remaining 12 are as big as possible from left to right". Hint: use monotonic stack. 
 
 ## Day 2
 
 1. Brute-force. For each range `(l, r)`, check all integers from 1 up to half the number of digits in `r`, inclusive. 
 2. Similar idea, but remember to handle duplicates. For example, `1111` can be represented as `1` repeated four times or `11` repeated two times. 
 
-## Day 3
-1. Brute-force.
-2. Treat each row as: "remove some digits so the remaining 12 are as big as possible from left to right". Hint: use monotonic stack. 
+## Day 1
 
-## Day 4
-1. Simulation.
-2. Simulation, but multiple rounds.  
+1. Modular arithmetic.
+2. Brute-force.
 
 {.edited}
-Last edited: Dec 03, 2025
+Last edited: Dec 04, 2025
