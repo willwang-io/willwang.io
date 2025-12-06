@@ -9,14 +9,26 @@ description = ""
 
 Note: the number of problems has been changed from 25 to 12 this year.
 
-```
+``` text
 Day   -Part 1-   -Part 2-
+  6   00:04:06   00:07:46
   5   00:03:50   00:06:40
   4   00:04:18   00:08:48
   3   00:03:38   00:09:51
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
 ```
+
+## Day 6
+
+1. Split by space, then simulation.
+2. Split it into vertical problem block at all-space columns, then for each block read digits top-to-bottom in each column (right to left) to form numbers.
+
+``` python
+g = [list(r.ljust(w)) for r in rows]
+sep = [all(g[r][c] == ' ' for r in range(h)) for c in range(w)]
+```
+
 
 ## Day 5
 
@@ -44,4 +56,4 @@ Day   -Part 1-   -Part 2-
 2. Brute-force.
 
 {.edited}
-Last edited: Dec 04, 2025
+Last edited: Dec 05, 2025

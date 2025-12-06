@@ -51,17 +51,58 @@ h2 {
     font-weight: bold;
 }
 
-pre, code {
+code {
     @include mono;
     font-feature-settings: 'ss01' 0, 'ss02' 1;
-    font-size: 95%;
+    font-size: 85%;
 }
 
 pre {
-    margin-bottom: 1em;
-    white-space: pre-wrap;
-    word-wrap: break-word;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: #f6f8fa;
+  border: 1px solid #e1e4e8;
+  overflow-x: auto;
 }
+
+pre > code {
+  display: block;
+  white-space: pre;
+}
+
+pre > code.hljs {
+  background: transparent;
+  padding: 0;
+}
+
+p code,
+li code,
+span code {
+  display: inline;
+  white-space: pre-wrap;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: rgba(27, 31, 35, 0.04);
+  border: 1px solid rgba(27, 31, 35, 0.08);
+}
+// pre, code {
+//     @include mono;
+//     font-size: 95%;
+//     display: block;
+//     white-space: pre;
+//     padding: 0em;
+//     // background-color: red;
+// }
+
+
+// pre {
+//     max-width: 100%;
+//     overflow-x: auto;
+//     // margin-bottom: 1em;
+//     white-space: pre-wrap;
+//     word-wrap: break-word;
+// }
+
 
 .date {
     font-size: 1em;
