@@ -11,12 +11,27 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ``` text
 Day   -Part 1-   -Part 2-
+  7   00:09:25   00:13:45
   6   00:04:06   00:07:46
   5   00:03:50   00:06:40
   4   00:04:18   00:08:48
   3   00:03:38   00:09:51
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
+```
+
+## Day 7
+1. Brute-force. For some reason, I thought it asks to count how many `|` at the end...
+2. DP. Define `f(r, c)` that returns the number of timelines from cell `(r, c)` downward (splitting on `^`), and memorize it so each cell's count is computed once and reused. 
+
+``` txt
+fn dp(r, c):
+  if r == last_row:
+    return 1
+  if grid[r+1][c] == '^':   // splitter below
+    return dp(r + 1, c - 1) + dp(r + 1, c + 1)
+  else:                     // straight down
+    return dp(r + 1, c)
 ```
 
 ## Day 6
@@ -56,4 +71,4 @@ sep = [all(g[r][c] == ' ' for r in range(h)) for c in range(w)]
 2. Brute-force.
 
 {.edited}
-Last edited: Dec 05, 2025
+Last edited: Dec 06, 2025
