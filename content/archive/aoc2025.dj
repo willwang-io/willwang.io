@@ -11,6 +11,7 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ``` text
 Day   -Part 1-   -Part 2-
+  8   00:04:11   00:08:59
   7   00:09:25   00:13:45
   6   00:04:06   00:07:46
   5   00:03:50   00:06:40
@@ -20,9 +21,14 @@ Day   -Part 1-   -Part 2-
   1   00:02:54   00:12:32
 ```
 
+## Day 8
+1. Kruskal-style unions on all edges order by distance, but stop after the 1000 shortest edges. 
+2. Keep going past 1000 edges until everything is connected. 
+
 ## Day 7
 1. Brute-force. For some reason, I thought it asks to count how many `|` at the end...
 2. DP. Define `f(r, c)` that returns the number of timelines from cell `(r, c)` downward (splitting on `^`), and memorize it so each cell's count is computed once and reused. 
+
 
 ``` txt
 fn dp(r, c):
@@ -71,4 +77,4 @@ sep = [all(g[r][c] == ' ' for r in range(h)) for c in range(w)]
 2. Brute-force.
 
 {.edited}
-Last edited: Dec 06, 2025
+Last edited: Dec 07, 2025
