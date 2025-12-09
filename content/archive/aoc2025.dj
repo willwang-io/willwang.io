@@ -11,6 +11,7 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ``` text
 Day   -Part 1-   -Part 2-
+  9   00:01:32   00:33:22
   8   00:04:11   00:08:59
   7   00:09:25   00:13:45
   6   00:04:06   00:07:46
@@ -20,6 +21,10 @@ Day   -Part 1-   -Part 2-
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
 ```
+
+## Day 9
+1. Brute-force.
+2. Okay, now we are talking.. Draw the red-loop polygon and flood-fill from the outside to mark disallowed tiles, then check every pair of red corners and keep only those rectangles whose entire area (via a prefix-sum check) lies within the remaining allowed region. My approach and implementation with C++ took around six minute to complete. 
 
 ## Day 8
 1. Kruskal-style unions on all edges order by distance, but stop after the 1000 shortest edges. 
@@ -77,4 +82,4 @@ sep = [all(g[r][c] == ' ' for r in range(h)) for c in range(w)]
 2. Brute-force.
 
 {.edited}
-Last edited: Dec 07, 2025
+Last edited: Dec 08, 2025
