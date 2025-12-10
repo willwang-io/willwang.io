@@ -11,6 +11,7 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ``` text
 Day   -Part 1-   -Part 2-
+ 10   00:05:16   00:25:38
   9   00:01:32   00:33:22
   8   00:04:11   00:08:59
   7   00:09:25   00:13:45
@@ -21,6 +22,11 @@ Day   -Part 1-   -Part 2-
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
 ```
+
+## Day 10
+1. BFS on bitmask states where the start is all-off, each button is an XOR toggle mask, and the minimal number of process is the shortest path distance from start to target, summed over all machines.
+2. Choose nonnegative integers $`x_k` (button press counts) so that for each counter $`j`, $`\sum_{k: j\in \text{button } k} x_k = t_j`, then minimize $`\sum_k x_k` rather than exploring raw counter states. A BFS over counter configurations blows up because the state space grows something like $`\prod_j(t_j+1)` (I think, unproven), so it's far more scalable to hand this ILP to a solver like `z3` and let it find the minimal solution. 
+
 
 ## Day 9
 1. Brute-force.
@@ -82,4 +88,4 @@ sep = [all(g[r][c] == ' ' for r in range(h)) for c in range(w)]
 2. Brute-force.
 
 {.edited}
-Last edited: Dec 08, 2025
+Last edited: Dec 09, 2025
