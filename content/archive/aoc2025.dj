@@ -11,6 +11,7 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ``` text
 Day   -Part 1-   -Part 2-
+ 11   00:03:23   00:09:48
  10   00:05:16   00:25:38
   9   00:01:32   00:33:22
   8   00:04:11   00:08:59
@@ -22,6 +23,10 @@ Day   -Part 1-   -Part 2-
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
 ```
+
+## Day 11
+1. Counts graph by running memoized DFS on the directed graph where each node's value is the sum of its successors' values, with `out` as the base case of 1. 
+2. Same, but arguments the state with a bitmask tracking whether `dac` and `fft` have been visited so that only paths whose mask has both bit set contribute at `out`. 
 
 ## Day 10
 1. BFS on bitmask states where the start is all-off, each button is an XOR toggle mask, and the minimal number of process is the shortest path distance from start to target, summed over all machines.
@@ -88,4 +93,4 @@ sep = [all(g[r][c] == ' ' for r in range(h)) for c in range(w)]
 2. Brute-force.
 
 {.edited}
-Last edited: Dec 09, 2025
+Last edited: Dec 10, 2025
