@@ -11,6 +11,7 @@ Note: the number of problems has been changed from 25 to 12 this year.
 
 ``` text
 Day   -Part 1-   -Part 2-
+ 12   00:15:03   00:15:05
  11   00:03:23   00:09:48
  10   00:05:16   00:25:38
   9   00:01:32   00:33:22
@@ -23,6 +24,10 @@ Day   -Part 1-   -Part 2-
   2   00:05:01   00:23:55
   1   00:02:54   00:12:32
 ```
+
+## Day 12
+1. Enumerate all unique rotations/reflections of each shape and represent each possible placement as a bitmask of occupied cells. Search for a non-overlapping selection of placements matching the required counts.
+2. Happy holiday :)
 
 ## Day 11
 1. Counts graph by running memoized DFS on the directed graph where each node's value is the sum of its successors' values, with `out` as the base case of 1. 
