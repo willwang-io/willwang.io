@@ -14,16 +14,10 @@ What am I up to [now](/now)?
 ## Posts
 
 ::: post-index
+- [My Project Euler Status](/euler){.post-title}
+[2026-01-04]{.date}
+
 - [2025 Advent of Code Summary](/archive/aoc2025){.post-title}
 [2025-12-01]{.date}
-:::
 
-## Threads
-
-Threads are collections of posts that either extend what would fit in a single post or build a more coherent narrative than tags. 
-
-::: card
-# [Project Euler Notes](/euler)
-
-Written solutions to a selection of Project Euler problems I’ve worked through.
 :::

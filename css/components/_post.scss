@@ -1,6 +1,5 @@
-.post-index li {
+.post-index li > p {
   display: flex;
-  justify-content: space-between;
   align-items: baseline;
   gap: 1rem;
 }
@@ -17,6 +16,7 @@
   white-space: nowrap;
 }
 
-.post-index .post-date {
+.post-index .date {
+  margin-left: auto;
   white-space: nowrap;
 }

@@ -5,33 +5,237 @@ keywords = ["Project Euler", "puzzles", "math", "algorithm", "solution writing"]
 description = ""
 ```
 
-# Project Euler Notes 
+# My Project Euler Status  
+
+Last updated: [Jan 04, 2025]{.date}
 
 ![My PE badge](https://projecteuler.net/profile/will_wang.png)
 
-Here I share written solutions to a selection of Project Euler problems I’ve worked through, highlighting the methods and reasoning behind each one. I do not share full solutions directly, and I withhold any detailed insights until the leaderboard (the first 100 fastest solvers) has been filled.
+I used to use C++ and Python, mostly for speed and big integers, but now I stick with Rust since it is good at both. 
 
-I use C++17, Rust (1.89.0), or Python3 to produce the solutions, without parallel programming unless stated otherwise. 
+At first, I solved problems in ascending difficulty, but now I’m just going through them in order. Something like this:
 
-Problems with a difficulty rating of "N/A" are [recent problems](https://projecteuler.net/recent), meaning their difficulty has not yet been determined.  
+``` =html
+<div style="text-align:center">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="316" height="548" viewBox="0 0 316 548"
+        style="background:transparent;background-color:transparent;color-scheme:light">
+    <style>
+        .edge{fill:none;stroke:light-dark(#000,#fff);stroke-miterlimit:10}
+        .arrow{fill:light-dark(#000,#fff);stroke:light-dark(#000,#fff);stroke-miterlimit:10}
+        .box{fill:light-dark(#fff,var(--ge-dark-color,#121212));stroke:light-dark(#000,#fff)}
+    </style>
 
-## Notes 
+    <g><g data-cell-id="0"><g data-cell-id="1">
 
-::: card
-# [972. Hyperbolic Plane (PENDING)](/euler/972.html)
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-13"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 127 97 L 127 117 L 127 107 L 127 120.63" pointer-events="stroke"/>
+        <path class="arrow" d="M 127 125.88 L 123.5 118.88 L 127 120.63 L 130.5 118.88 Z" pointer-events="all"/>
+        </g></g>
 
-Difficulty rating: N/A | Last edited: Nov 30, 2025 | Rank: 52nd
-:::
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-9">
+        <g transform="translate(.5,.5)"><rect class="box" x="67" y="37" width="120" height="60" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:118px;height:1px;padding-top:67px;margin-left:68px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">N = 1</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="68" y="60.5" width="118" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
 
-::: card
-# [971. Modular Polynomial Composition
-](/euler/971.html)
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-18"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 127 187 L 127 207 L 127 197 L 127 210.63" pointer-events="stroke"/>
+        <path class="arrow" d="M 127 215.88 L 123.5 208.88 L 127 210.63 L 130.5 208.88 Z" pointer-events="all"/>
+        </g></g>
 
-Difficulty rating: N/A | Last edited: Nov 24, 2025
-:::
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-12">
+        <g transform="translate(.5,.5)"><rect class="box" x="67" y="127" width="120" height="60" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:118px;height:1px;padding-top:157px;margin-left:68px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">
+                    Solve<span> Problem N</span>
+                </div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="68" y="150.5" width="118" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
 
-::: card
-# [681. Maximal Area](/euler/681.html)
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-22"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 127 277 L 127 297 L 127 287 L 127 300.63" pointer-events="stroke"/>
+        <path class="arrow" d="M 127 305.88 L 123.5 298.88 L 127 300.63 L 130.5 298.88 Z" pointer-events="all"/>
+        </g></g>
 
-Difficulty rating: 50% | Last edited: Oct 15, 2025
-:::
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-48"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 187 247 L 247 247 L 247 427 L 193.37 427" pointer-events="stroke"/>
+        <path class="arrow" d="M 188.12 427 L 195.12 423.5 L 193.37 427 L 195.12 430.5 Z" pointer-events="all"/>
+        </g></g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-14">
+        <g transform="translate(.5,.5)"><rect class="box" x="67" y="217" width="120" height="60" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:118px;height:1px;padding-top:247px;margin-left:68px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">Solved?</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="68" y="240.5" width="118" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-27"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 127 367 L 127 387 L 127 377 L 127 390.63" pointer-events="stroke"/>
+        <path class="arrow" d="M 127 395.88 L 123.5 388.88 L 127 390.63 L 130.5 388.88 Z" pointer-events="all"/>
+        </g></g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-21">
+        <g transform="translate(.5,.5)"><rect class="box" x="67" y="307" width="120" height="60" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:118px;height:1px;padding-top:337px;margin-left:68px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">N = N + 1</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="68" y="330.5" width="118" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-23">
+        <g transform="translate(.5,.5)"><rect x="127" y="277" width="60" height="30" fill="none" stroke="none" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:58px;height:1px;padding-top:292px;margin-left:128px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">Yes</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="128" y="285.5" width="58" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-28"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 67 427 L 7 427 L 7 157 L 60.63 157" pointer-events="stroke"/>
+        <path class="arrow" d="M 65.88 157 L 58.88 160.5 L 60.63 157 L 58.88 153.5 Z" pointer-events="all"/>
+        </g></g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-31"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 127 457 L 127 477 L 127 467 L 127 480.63" pointer-events="stroke"/>
+        <path class="arrow" d="M 127 485.88 L 123.5 478.88 L 127 480.63 L 130.5 478.88 Z" pointer-events="all"/>
+        </g></g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-26">
+        <g transform="translate(.5,.5)"><rect class="box" x="67" y="397" width="120" height="60" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:118px;height:1px;padding-top:427px;margin-left:68px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">Tired?</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="68" y="420.5" width="118" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-29">
+        <g transform="translate(.5,.5)"><rect x="7" y="397" width="60" height="30" fill="none" stroke="none" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:58px;height:1px;padding-top:412px;margin-left:8px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">No</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="8" y="405.5" width="58" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-36"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 187 517 L 307 517 L 307 157 L 193.37 157" pointer-events="stroke"/>
+        <path class="arrow" d="M 188.12 157 L 195.12 153.5 L 193.37 157 L 195.12 160.5 Z" pointer-events="all"/>
+        </g></g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-30">
+        <g transform="translate(.5,.5)"><rect class="box" x="67" y="487" width="120" height="60" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:118px;height:1px;padding-top:517px;margin-left:68px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">Sleep</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="68" y="510.5" width="118" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-32">
+        <g transform="translate(.5,.5)"><rect x="127" y="457" width="60" height="30" fill="none" stroke="none" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:58px;height:1px;padding-top:472px;margin-left:128px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">Yes</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="128" y="465.5" width="58" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-46"><g transform="translate(.5,.5)">
+        <path class="edge" d="M 127 7 L 127 30.63" pointer-events="stroke"/>
+        <path class="arrow" d="M 127 35.88 L 123.5 28.88 L 127 30.63 L 130.5 28.88 Z" pointer-events="all"/>
+        </g></g>
+
+        <g data-cell-id="6VLFntJxFkbpWPURm4jq-49">
+        <g transform="translate(.5,.5)"><rect x="187" y="217" width="60" height="30" fill="none" stroke="none" pointer-events="all"/></g>
+        <g><g><switch>
+            <foreignObject style="overflow:visible;text-align:left" pointer-events="none" width="100%" height="100%"
+            requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility">
+            <div xmlns="http://www.w3.org/1999/xhtml"
+                style="display:flex;align-items:unsafe center;justify-content:unsafe center;width:58px;height:1px;padding-top:232px;margin-left:188px">
+                <div style="box-sizing:border-box;font-size:0;text-align:center">
+                <div style="display:inline-block;font-size:12px;font-family:Helvetica;color:light-dark(#000,#fff);line-height:1.2;pointer-events:all;white-space:normal;word-wrap:normal">No</div>
+                </div>
+            </div>
+            </foreignObject>
+            <image x="188" y="225.5" width="58" height="17" xlink:href=""/>
+        </switch></g></g>
+        </g>
+
+    </g></g></g></g>
+    </svg>
+</div>
+```
