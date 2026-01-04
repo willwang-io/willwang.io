@@ -1,0 +1,21 @@
+```=toml
+title = "Now"
+date = 2025-11-30
+keywords = ["now"]
+description = ""
+```
+
+# Now 
+
+{.date}
+Jan 04, 2025
+
+## Working
+
+_Free as the wind._
+
+## Reading
+
+- _The Mythical Man-Month_ by Fred Brooks
+- _Programming Rust_ by Jim Blandy, Jason Orendorff, Leonora Tindall
+- _Code_ by Charles Petzold
