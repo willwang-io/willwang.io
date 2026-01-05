@@ -11,7 +11,9 @@ Last updated: [Jan 04, 2025]{.date}
 
 ![My PE badge](https://projecteuler.net/profile/will_wang.png)
 
-I used to use C++ and Python, mostly for speed and big integers, but now I stick with Rust since it is good at both. 
+![My PE progress](https://raw.githubusercontent.com/willwang-io/pe-progress-bar/refs/heads/main/solve_status_strip.png)
+
+I used to use C++ and Python, mostly for speed and big integers, but now I stick with Rust. 
 
 At first, I solved problems in ascending difficulty, but now I’m just going through them in order. Something like this:
 

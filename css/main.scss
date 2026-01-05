@@ -5,6 +5,7 @@
 @use "base/footnotes";
 @use "base/links";
 @use "base/lists";
+@use "base/image";
 
 @use "layout/container";
 @use "layout/footer";
@@ -14,3 +15,4 @@
 @use "components/nav";
 @use "components/card";
 @use "components/post";
+@use "components/table";
